@@ -1,0 +1,2212 @@
+PAP system design, catalog module structure
+B/S mode and C/S mode , the operating environment is: lnmp + lua
+Involved languages: C/C++ LUA PHP SHELL
+PHP framework: zendframework 2 Server architecture: self-developed
+
+Main directory structure ( ./ )
+.
+|-- composer.json -- PHP framework JSON
+|-- composer.phar -- PHP framework Upgrade Script
+|-- config -- PHP framework configuration directory
+|-- data -- PHP framework Data Directory
+|-- Docs -- Documentation directory
+|-- init_autoloader.php -- PHP framework Initialization File
+|-- LICENSE.txt
+|-- module -- PHP framework Module Directory
+|-- public -- PHP framework Public Directory
+|-- README.md
+|-- server --server engine directory
+`-- vendor -- PHP framework Plugin and framework directory
+
+
+Server engine directory structure ( ./server )
+.
+|-- automake.sh -- Automatically generate server make files and environment scripts, run when first built
+|-- Billing -- Verification server directory
+|-- Common -- Common shared directory
+|-- DBInit_TianLong.sql -- Server database script
+|-- Login -- Login server directory
+|-- Makefile
+|-- mk_tags --Automatically generate tag script
+|-- myiconv.sh -- Convert file encoding script ( convert from GBK to UTF-8 by default)
+|-- premake -- compile variable configuration file
+|-- premake.mk
+|-- README.md
+|-- Run --Server running directory
+|-- Server -- Game server directory (main)
+|-- ShareMemory -- shared memory server directory
+`-- World --World server directory
+
+#The following file description is only for .cpp or .c , and no additional description is given for header files
+Verify the server directory structure ( ./server/Billing )
+.
+|-- Main -- Main directory
+| |-- Billing.cpp -- verification server main entry 
+| |-- Billing.h
+| |-- DBManager.cpp --Database manager
+| |-- DBManager.h
+| |-- DBTypes.h
+| |-- Makefile
+| |-- ODBCInterface.cpp -- ODBC interface
+| |-- ODBCInterface.h
+| |-- Player.cpp --Player message processing
+| |-- Player.h
+| |-- PlayerManager.cpp --Player manager
+| |-- PlayerManager.h
+| |-- PlayerPool.cpp --Player data pool
+| |-- PlayerPool.h
+| |-- ServerManager.cpp -- Service Manager
+| |-- ServerManager.h
+| |-- ServerPlayer.cpp --Server player message processing
+| |-- ServerPlayer.h
+| |-- UserDBManager.cpp --User data manager
+| |-- UserDBManager.h
+| |-- WebPlayer.cpp --Web user module ( this module will be discarded in the new version )
+| `-- WebPlayer.h
+|-- Makefile
+|-- Packets -- Network package directory
+| |-- BLRetAuthHandler.cpp --The verification server sends the login result message to the login server account
+| |-- BWConnectHandler.cpp --Verify server connection world server message
+| |-- BWValidateUserHandler.cpp --The message sent by the verification server to the world server to verify the user
+| |-- LBAskAuthHandler.cpp --Login to the server to request verification of account information
+| |-- Makefile
+| |-- SSConnectHandler.cpp --Server connection message ( same below, generally used for communication between internal servers )
+| |-- SSScenePlayerCountHandler.cpp -- Message about the number of players in the scene
+| `-- WBRetValidateUserHandler.cpp --The message that the world server returns to the verification server to verify the user result
+|-- stdafx.cpp
+`-- stdafx.h -- common header file, basically all cpp files will include it, including all necessary header files for functional modules
+
+Common directory file description (./server/Common)
+.
+|-- Assertx.cpp -- exception handler
+|-- Assertx.h
+|-- BaseType.h -- Basic type definition ( Mainly the definition of variable types and system types. The server supports WINDOS and LINUX )
+|-- BuffImpactMgr.cpp -- Buff manager
+|-- BuffImpactMgr.h
+|-- CampDataMgr.cpp -- Camp manager
+|-- CampDataMgr.h
+|-- Chain.cpp --The bottom- level linked list
+|-- Chain.h
+|-- Combat --Combat public directory ( to be improved )
+| |-- CampAndStand.cpp -- Camp data table structure and function implementation
+| |-- CampAndStand.h
+| |-- DataRecords.cpp -- table record structure and specific function implementation of skills and effects
+| |-- DataRecords.h
+| |-- Makefile
+| |-- readme.txt
+| |-- SpecialObjData.cpp -- data table related to special objects
+| |-- TemplateManager.cpp --General manager and reader for data tables
+| `-- TemplateManager.h
+|-- DataBase
+| |-- Makefile
+| |-- TLBB_DBC.cpp -- File data class, reads text edited directly in Excel
+| `-- TLBB_DBC.h
+|-- DB_Struct.cpp
+|-- DB_Struct.h
+|-- DBSystem --Data system
+| |-- DataBase --Database
+| | |-- DBAbilityList.cpp --Life skill data class
+| | |-- DBAbilityList.h
+| | |-- DBCharFullData.cpp --All character data classes
+| | |-- DBCharFullData.h
+| | |-- DBCharList.cpp --Character list class
+| | |-- DBCharList.h
+| | |-- DBCoolDownInfo.cpp --Cooling time class
+| | |-- DBCoolDownInfo.h
+| | |-- DBCreateCharOp.cpp --Character creation operation class
+| | |-- DBCreateCharOp.h
+| | |-- DBDeleteCharOp.cpp --Role deletion operation class
+| | |-- DBDeleteCharOp.h
+| | |-- DBEquipBaseList.cpp -- Equipment basic data list class
+| | |-- DBEquipBaseList.h
+| | |-- DBGuildInfo.cpp -- Guild information class
+| | |-- DBGuildInfo.h
+| | |-- DBImpactList.cpp -- Role status list class
+| | |-- DBImpactList.h
+| | |-- DBInterface.cpp -- DB interface class
+| | |-- DBInterface.h
+| | |-- DBItemList.cpp -- Character item list class
+| | |-- DBItemList.h
+| | |-- DBItemSerial.cpp -- Character item serial number class
+| | |-- DBItemSerial.h
+| | |-- DBMailInfo.cpp --Role mail information class
+| | |-- DBMailInfo.h
+| | |-- DBManager.cpp -- DB manager
+| | |-- DBManager.h
+| | |-- DBPetList.cpp --Character pet list class
+| | |-- DBPetList.h
+| | |-- DBPrivateInfo.cpp --Role private information class
+| | |-- DBPrivateInfo.h
+| | |-- DBRelationList.cpp --Role relationship class
+| | |-- DBRelationList.h
+| | |-- DBSkillList.cpp -- Role skill list class
+| | |-- DBSkillList.h
+| | |-- DBTaskList.cpp --Role list class
+| | |-- DBTaskList.h
+| | |-- DBTitleInfo.cpp --Role title information class
+| | |-- DBTitleInfo.h
+| | |-- DBTypes.h
+| | |-- DBWebShopInfo.cpp --Role store information class
+| | |-- DBWebShopInfo.h
+| | |-- DBXinFaList.cpp --Character XinFa list class
+| | |-- DBXinFaList.h
+| | |-- Makefile
+| | |-- ODBCBase.cpp -- ODBC base class
+| | |-- ODBCBase.h
+| | |-- ODBCInterface.cpp -- ODBC interface class
+| | |-- ODBCInterface.h
+| | |-- SqlTemplate.cpp -- SQL template class
+| | `-- SqlTemplate.h
+| `-- Makefile
+|-- DirectlyImpactMgr.cpp -- Role status dictionary
+|-- DirectlyImpactMgr.h
+|-- FileDataMgr.cpp --File data manager
+|-- FileDataMgr.h
+|-- GameDefine2.h
+|-- GameDefine_Attr.h
+|-- GameDefine_City.h
+|-- GameDefine_Guild.h
+|-- GameDefine.h
+|-- GameDefine_Item.h
+|-- GameDefine_PlayerShop.h
+|-- GameDefine_Result.cpp --Game result definition class
+|-- GameDefine_Result.h
+|-- GameDefine_Scene.h
+|-- GameStruct_Camp.h
+|-- GameStruct_City.h
+|-- GameStruct.cpp --Game structure
+|-- GameStruct_Finger.cpp --Game query structure
+|-- GameStruct_Finger.h
+|-- GameStruct_Guild.h
+|-- GameStruct.h
+|-- GameStruct_Impact.h
+|-- GameStruct_Item.h
+|-- GameStruct_MinorPasswd.cpp --Secondary password structure
+|-- GameStruct_MinorPasswd.h
+|-- GameStruct_Pet.cpp --Pet structure
+|-- GameStruct_Pet.h
+|-- GameStruct_Relation.cpp -- Role relationship structure
+|-- GameStruct_Relation.h
+|-- GameStruct_Scene.h
+|-- GameStruct_Script.cpp --Script structure
+|-- GameStruct_Script.h
+|-- GameStruct_Skill.h
+|-- GameStruct_Team.h
+|-- GameUtil.cpp --Game extension method
+|-- GameUtil.h
+|-- KeyDog.h
+|-- KeyDog.lib
+|-- Makefile
+|-- Net -- Network message
+| |-- FileAPI.cpp --File operation interface
+| |-- FileAPI.h
+| |-- Makefile
+| |-- Packet.cpp --Network packet class
+| |-- Packet.h
+| |-- ServerSocket.cpp --Server socket class
+| |-- ServerSocket.h
+| |-- SocketAPI.cpp --Socket interface class
+| |-- SocketAPI.h
+| |-- Socket.cpp --Socket class
+| |-- Socket.h
+| |-- SocketInputStream.cpp --Socket input stream class
+| |-- SocketInputStream.h
+| |-- SocketOutputStream.cpp --Socket output stream class
+| `-- SocketOutputStream.h
+|-- OResultDef.h
+|-- PacketDefine.h
+|-- PacketFactory.h
+|-- PacketFactoryManager.cpp --Network packet factory manager class
+|-- PacketFactoryManager.h
+|-- Packets -- Network packets ( B -> Billing, L -> Login, W -> World, C -> Client, G -> Server, S -> ShareMemory )
+| |-- BLRetAuth.cpp -- Return account verification results
+| |-- BLRetAuth.h
+| |-- BWConnect.cpp --Connect
+| |-- BWConnect.h
+| |-- BWValidateUser.cpp -- Validate user
+| |-- BWValidateUser.h
+| |-- CGApplyPrivateInfo.cpp --Confirm privacy information
+| |-- CGApplyPrivateInfo.h
+| |-- CGAskActiveTimeUpdate.cpp --Activity time update 
+| |-- CGAskActiveTimeUpdate.h
+| |-- CGAskChangeScene.cpp --Request scene switching
+| |-- CGAskChangeScene.h
+| |-- CGAskDetailAbilityInfo.cpp --Request detailed information on life skills
+| |-- CGAskDetailAbilityInfo.h
+| |-- CGAskDetailAttrib.cpp -- Request detailed attribute information of the role
+| |-- CGAskDetailAttrib.h
+| |-- CGAskDetailEquipList.cpp -- Request equipment list
+| |-- CGAskDetailEquipList.h
+| |-- CGAskDetailSkillList.cpp -- Request skill list
+| |-- CGAskDetailSkillList.h
+| |-- CGAskDetailXinFaList.cpp -- Request XinFa list
+| |-- CGAskDetailXinFaList.h
+| |-- CGAskItemInfo.cpp --Request item list
+| |-- CGAskItemInfo.h
+| |-- CGAskJoinMenpai.cpp --Request to join a sect
+| |-- CGAskJoinMenpai.h
+| |-- CGAskLeanAbility.cpp --Request to learn life skills
+| |-- CGAskLeanAbility.h
+| |-- CGAskLockObj.cpp --Request to lock the object
+| |-- CGAskLockObj.h
+| |-- CGAskMail.cpp -- Request mail data
+| |-- CGAskMail.h
+| |-- CGAskMissionDesc.cpp --Request mission data
+| |-- CGAskMissionDesc.h
+| |-- CGAskMissionList.cpp --Request mission list
+| |-- CGAskMissionList.h
+| |-- CGAskMyBagList.cpp --Request your own backpack list
+| |-- CGAskMyBagList.h
+| |-- CGAskPrivateInfo.cpp --Request your own privacy information
+| |-- CGAskPrivateInfo.h
+| |-- CGAskSetting.cpp --Request setting information
+| |-- CGAskSetting.h
+| |-- CGAskStudyXinfa.cpp --Request to learn Xinfa
+| |-- CGAskStudyXinfa.h
+| |-- CGAskTeamFollow.cpp --Request team following
+| |-- CGAskTeamFollow.h
+| |-- CGAskTeamInfo.cpp --Request team information
+| |-- CGAskTeamInfo.h
+| |-- CGAskTeamMemberInfo.cpp --Request team member information
+| |-- CGAskTeamMemberInfo.h
+| |-- CGAttack.cpp --attack message
+| |-- CGAttack.h
+| |-- CGBankAcquireList.cpp -- Request bank acquisition list 
+| |-- CGBankAcquireList.h
+| |-- CGBankAddItem.cpp --Request to add items to the bank
+| |-- CGBankAddItem.h
+| |-- CGBankClose.cpp -- Request to close the bank
+| |-- CGBankClose.h
+| |-- CGBankMoney.cpp -- Request bank money data
+| |-- CGBankMoney.h
+| |-- CGBankRemoveItem.cpp -- Request to remove an item from the bank
+| |-- CGBankRemoveItem.h
+| |-- CGBankSwapItem.cpp -- Request to swap items in the bank
+| |-- CGBankSwapItem.h
+| |-- CGBBSApply.cpp -- BBS confirmation
+| |-- CGBBSApply.h
+| |-- CGBBSSychMessages.cpp -- BBS messages
+| |-- CGBBSSychMessages.h
+| |-- CGChannelCreate.cpp --Guide creation ( team )
+| |-- CGChannelCreate.h
+| |-- CGChannelDismiss.cpp --Guide separation ( team )
+| |-- CGChannelDismiss.h
+| |-- CGChannelInvite.cpp --Guide invitation ( team )
+| |-- CGChannelInvite.h
+| |-- CGChannelKick.cpp --Guide to kick out ( team )
+| |-- CGChannelKick.h
+| |-- CGCharAllTitles.cpp --All the titles of the character
+| |-- CGCharAllTitles.h
+| |-- CGCharAskBaseAttrib.cpp --Request character basic attributes
+| |-- CGCharAskBaseAttrib.h
+| |-- CGCharAskEquipment.cpp --Request character equipment information
+| |-- CGCharAskEquipment.h
+| |-- CGCharDefaultEvent.h
+| |-- CGCharDefaultEvnet.cpp --Character default event
+| |-- CGCharIdle.cpp --Role rest ( meditation )
+| |-- CGCharIdle.h
+| |-- CGCharJump.cpp --Character jump
+| |-- CGCharJump.h
+| |-- CGCharMoodState.cpp --Character mood ( abandoned )
+| |-- CGCharMoodState.h
+| |-- CGCharMove.cpp --Character movement
+| |-- CGCharMove.h
+| |-- CGCharPositionWarp.cpp --Character position change ( automatic path finding )
+| |-- CGCharPositionWarp.h
+| |-- CGCharSit.cpp --Character sits down ( related to rest ? )
+| |-- CGCharSit.h
+| |-- CGCharStopLogic.cpp --Character logic interruption 
+| |-- CGCharStopLogic.h
+| |-- CGCharUpdateCurTitle.cpp -- character updates current title
+| |-- CGCharUpdateCurTitle.h
+| |-- CGCharUseSkill.cpp --Character use skills
+| |-- CGCharUseSkill.h
+| |-- CGChat.cpp --Chat
+| |-- CGChat.h
+| |-- CGCityAskAttr.cpp --Request city data
+| |-- CGCityAskAttr.h
+| |-- CGCommand.cpp -- Command execution
+| |-- CGCommand.h
+| |-- CGConnect.cpp --Connection
+| |-- CGConnect.h
+| |-- CGDiscardEquip.cpp --Equipment discard 
+| |-- CGDiscardEquip.h
+| |-- CGDiscardItem.cpp --Item discard
+| |-- CGDiscardItem.h
+| |-- CGDispelBuffReq.cpp -- BUFF unloading
+| |-- CGDispelBuffReq.h
+| |-- CGDoEvent.h
+| |-- CGDoEvnet.cpp --Execute XX
+| |-- CGEnterScene.cpp --Enter the scene
+| |-- CGEnterScene.h
+| |-- CGEnvRequest.cpp --Enter the scene and return 
+| |-- CGEnvRequest.h
+| |-- CGEventRequest.cpp --Game event return ( usually script event )
+| |-- CGEventRequest.h
+| |-- CGExchangeApplyI.cpp -- Request transaction 1 ( detailed description of the transaction is in the corresponding Handler )
+| |-- CGExchangeApplyI.h
+| |-- CGExchangeCancel.cpp --Transaction cancellation
+| |-- CGExchangeCancel.h
+| |-- CGExchangeOkIII.cpp -- Return 3 if the transaction is successful
+| |-- CGExchangeOkIII.h
+| |-- CGExchangeReplyI.cpp --Transaction confirmation
+| |-- CGExchangeReplyI.h
+| |-- CGExchangeSynchItemII.cpp --Transaction Synchronize the changes of the client 's transaction box to the other party
+| |-- CGExchangeSynchItemII.h
+| |-- CGExchangeSynchLock.cpp --Transaction The client notifies the server to synchronize its lock changes to the other client
+| |-- CGExchangeSynchLock.h
+| |-- CGExchangeSynchMoneyII.cpp --Transaction The client notifies the server of changes in money 
+| |-- CGExchangeSynchMoneyII.h
+| |-- CGExecuteScript.cpp --Execute script
+| |-- CGExecuteScript.h
+| |-- CGFinger.cpp --Character information search
+| |-- CGFinger.h
+| |-- CGGemCompound.cpp -- Gem synthesis
+| |-- CGGemCompound.h
+| |-- CGGuildApply.cpp -- Guild confirmation
+| |-- CGGuildApply.h
+| |-- CGGuild.cpp --Guild
+| |-- CGGuild.h
+| |-- CGGuildJoin.cpp -- Join the guild
+| |-- CGGuildJoin.h
+| |-- CGHeartBeat.cpp --Heartbeat packet
+| |-- CGHeartBeat.h
+| |-- CGIssuePetPlacard.cpp -- Issue a pet announcement 
+| |-- CGIssuePetPlacard.h
+| |-- CGItemSynch.cpp -- Synchronize client item changes
+| |-- CGItemSynch.h
+| |-- CGLeaveScene.cpp --Leave the scene
+| |-- CGLeaveScene.h
+| |-- CGLockTarget.cpp --Lock target
+| |-- CGLockTarget.h
+| |-- CGMail.cpp --Send email
+| |-- CGMail.h
+| |-- CGManipulatePet.cpp --Pet operation
+| |-- CGManipulatePet.h
+| |-- CGMinorPasswd.cpp --Secondary password operation
+| |-- CGMinorPasswd.h
+| |-- CGMissionAbandon.cpp --Abandon the task
+| |-- CGMissionAbandon.h
+| |-- CGMissionAccept.cpp --Accept the task
+| |-- CGMissionAccept.h
+| |-- CGMissionCheck.cpp -- Check task
+| |-- CGMissionCheck.h
+| |-- CGMissionContinue.cpp --Continue the task
+| |-- CGMissionContinue.h
+| |-- CGMissionRefuse.cpp --Reject task
+| |-- CGMissionRefuse.h
+| |-- CGMissionSubmit.cpp --Submit task
+| |-- CGMissionSubmit.h
+| |-- CGModifySetting.cpp --Change settings 
+| |-- CGModifySetting.h
+| |-- CGOpenItemBox.cpp --Open the item box
+| |-- CGOpenItemBox.h
+| |-- CGOtherEquip.cpp --Other equipment information of the character
+| |-- CGOtherEquip.h
+| |-- CGPackage_SwapItem.cpp --Swap items
+| |-- CGPackage_SwapItem.h
+| |-- CGPackUpPacket.cpp --drop package update, just do the tidying up
+| |-- CGPackUpPacket.h
+| |-- CGPickBoxItem.cpp -- Drop package pickup
+| |-- CGPickBoxItem.h
+| |-- CGPlayerCallOfResult.cpp --Role call result
+| |-- CGPlayerCallOfResult.h
+| |-- CGPlayerDieResult.cpp --Character death result
+| |-- CGPlayerDieResult.h
+| |-- CGPlayerShopAcquireItemList.cpp --Player store item list
+| |-- CGPlayerShopAcquireItemList.h
+| |-- CGPlayerShopAcquireShopList.cpp --Player shop list
+| |-- CGPlayerShopAcquireShopList.h
+| |-- CGPlayerShopApply.cpp --Player store confirmation
+| |-- CGPlayerShopApply.h
+| |-- CGPlayerShopAskForRecord.cpp --The Divine Comedy Stall
+| |-- CGPlayerShopAskForRecord.h
+| |-- CGPlayerShopBuy.cpp --Player store purchase
+| |-- CGPlayerShopBuy.h
+| |-- CGPlayerShopBuyItem.cpp --Player shop purchase items
+| |-- CGPlayerShopBuyItem.h
+| |-- CGPlayerShopBuyShop.cpp -- Buy player shop
+| |-- CGPlayerShopBuyShop.h
+| |-- CGPlayerShopDesc.cpp --Modify player store description
+| |-- CGPlayerShopDesc.h
+| |-- CGPlayerShopEstablish.cpp --Player store establishment
+| |-- CGPlayerShopEstablish.h
+| |-- CGPlayerShopFavorite.cpp --Favorite store
+| |-- CGPlayerShopFavorite.h
+| |-- CGPlayerShopMoney.cpp --Player store money operation
+| |-- CGPlayerShopMoney.h
+| |-- CGPlayerShopName.cpp --Modify the player store name
+| |-- CGPlayerShopName.h
+| |-- CGPlayerShopOnSale.cpp --Player store listing
+| |-- CGPlayerShopOnSale.h
+| |-- CGPlayerShopOpenStall.cpp --Player shop opening
+| |-- CGPlayerShopOpenStall.h
+| |-- CGPlayerShopPartner.cpp --Player store partner operation 
+| |-- CGPlayerShopPartner.h
+| |-- CGPlayerShopSaleOut.cpp --Notify the server that the store has been sold out
+| |-- CGPlayerShopSaleOut.h
+| |-- CGPlayerShopSize.cpp --Extended shop
+| |-- CGPlayerShopSize.h
+| |-- CGPlayerShopType.cpp --Player shop type
+| |-- CGPlayerShopType.h
+| |-- CGRelation.cpp --Role relationship
+| |-- CGRelation.h
+| |-- CGRemoveGem.cpp -- Gem removal
+| |-- CGRemoveGem.h
+| |-- CGReqLevelUp.cpp -- Character upgrade
+| |-- CGReqLevelUp.h
+| |-- CGReqManualAttr.cpp --Main attributes ( poison, fire, ice, mysterious )
+| |-- CGReqManualAttr.h
+| |-- CGReqResetAttr.cpp --Refresh attributes ( wash points )
+| |-- CGReqResetAttr.h
+| |-- CGReturnTeamFollow.cpp --Team following 
+| |-- CGReturnTeamFollow.h
+| |-- CGSetMoodToHead.cpp --Set mood title
+| |-- CGSetMoodToHead.h
+| |-- CGSetPetAttrib.cpp --Set pet attributes
+| |-- CGSetPetAttrib.h
+| |-- CGShopBuy.cpp -- Store purchase items
+| |-- CGShopBuy.h
+| |-- CGShopBuySold.cpp -- abandoned
+| |-- CGShopBuySold.h
+| |-- CGShopClose.cpp -- Close the store
+| |-- CGShopClose.h
+| |-- CGShopRepair.cpp -- Shop repair
+| |-- CGShopRepair.h
+| |-- CGSShopSell.cpp --Shop sale
+| |-- CGSHopSell.h
+| |-- CGSkill.cpp --Skills ( discarded )
+| |-- CGSkill.h
+| |-- CGSplitItem.cpp -- Split items
+| |-- CGSplitItem.h
+| |-- CGStallAddItem.cpp --The client puts things in the stall
+| |-- CGStallAddItem.h
+| |-- CGStallApply.cpp -- Client applies for stall setting
+| |-- CGStallApply.h
+| |-- CGStallBuy.cpp -- Buy the stall owner's goods
+| |-- CGStallBuy.h
+| |-- CGStallClose.cpp -- Client side closing
+| |-- CGStallClose.h
+| |-- CGStallDefaultPage.cpp --Set the default stall page
+| |-- CGStallDefaultPage.h
+| |-- CGStallEstablish.cpp -- Client stall establishment
+| |-- CGStallEstablish.h
+| |-- CGStallItemPrice.cpp -- Client changes item price
+| |-- CGStallItemPrice.h
+| |-- CGStallOpen.cpp --Client request to open the interface stall
+| |-- CGStallOpen.h
+| |-- CGStallRemoveItem.cpp --The client notifies the server to remove this item from the stall
+| |-- CGStallRemoveItem.h
+| |-- CGStallShopName.cpp --Set the stall name
+| |-- CGStallShopName.h
+| |-- CGStopTeamFollow.cpp -- Stop team following
+| |-- CGStopTeamFollow.h
+| |-- CGTeamApply.cpp --Team confirmation
+| |-- CGTeamApply.h
+| |-- CGTeamAppoint.cpp -- Transfer team leader
+| |-- CGTeamAppoint.h
+| |-- CGTeamDismiss.cpp --Disband the team
+| |-- CGTeamDismiss.h
+| |-- CGTeamInvite.cpp --Team invitation
+| |-- CGTeamInvite.h
+| |-- CGTeamKick.cpp -- Kick out of the team
+| |-- CGTeamKick.h
+| |-- CGTeamLeaderRetInvite.cpp --Captain invitation result
+| |-- CGTeamLeaderRetInvite.h
+| |-- CGTeamLeave.cpp --Leave the team
+| |-- CGTeamLeave.h
+| |-- CGTeamRetApply.cpp --Team confirmation result
+| |-- CGTeamRetApply.h
+| |-- CGTeamRetInvite.cpp --Team invitation result
+| |-- CGTeamRetInvite.h
+| |-- CGTest.cpp --test
+| |-- CGTest.h
+| |-- CGUnEquip.cpp --Unload equipment
+| |-- CGUnEquip.h
+| |-- CGUseAbility.cpp --Use life skills
+| |-- CGUseAbility.h
+| |-- CGUseEquip.cpp --Put on equipment
+| |-- CGUseEquip.h
+| |-- CGUseEquipSkill.cpp --Use equipment skills
+| |-- CGUseEquipSkill.h
+| |-- CGUseGem.cpp --Use gems
+| |-- CGUseGem.h
+| |-- CGUseItem.cpp --Use items
+| |-- CGUseItem.h
+| |-- CLAskCharList.cpp --Request character list
+| |-- CLAskCharList.h
+| |-- CLAskCharLogin.cpp --Request character login
+| |-- CLAskCharLogin.h
+| |-- CLAskCreateChar.cpp --Request to create a character
+| |-- CLAskCreateChar.h
+| |-- CLAskDeleteChar.cpp --Request to delete the character
+| |-- CLAskDeleteChar.h
+| |-- CLAskLogin.cpp -- Request account login
+| |-- CLAskLogin.h
+| |-- CLConnect.cpp --Connection
+| |-- CLConnect.h
+| |-- ExchangeMsgDefine.h
+| |-- GCAbandonAbility.cpp -- Forgotten life skills 
+| |-- GCAbandonAbility.h
+| |-- GCAbilityAction.cpp --Life skill action
+| |-- GCAbilityAction.h
+| |-- GCAbilityExp.cpp --Life skills experience
+| |-- GCAbilityExp.h
+| |-- GCAbilityLevel.cpp --Life skill level
+| |-- GCAbilityLevel.h
+| |-- GCAbilityResult.cpp --Life skills learning results
+| |-- GCAbilityResult.h
+| |-- GCAbilitySucc.cpp -- Life skills learning success
+| |-- GCAbilitySucc.h
+| |-- GCAbilityTeacherInfo.cpp --Life skills teacher information
+| |-- GCAbilityTeacherInfo.h
+| |-- GCAddCanPickMissionItem.cpp --Whether mission item information can be discarded
+| |-- GCAddCanPickMissionItem.h
+| |-- GCAddLockObj.cpp --Lock object ( discarded )
+| |-- GCAddLockObj.h
+| |-- GCArrive.cpp --Notify client arrival
+| |-- GCArrive.h
+| |-- GCAskTeamFollow.cpp --Request team following
+| |-- GCAskTeamFollow.h
+| |-- GCAttack.cpp -- Attack message
+| |-- GCAttack.h
+| |-- GCBankAcquireList.cpp --Get bank list
+| |-- GCBankAcquireList.h
+| |-- GCBankAddItem.cpp --Add items to the bank
+| |-- GCBankAddItem.h
+| |-- GCBankBegin.cpp -- Open the bank
+| |-- GCBankBegin.h
+| |-- GCBankItemInfo.cpp --Bank item information
+| |-- GCBankItemInfo.h
+| |-- GCBankMoney.cpp --Bank money
+| |-- GCBankMoney.h
+| |-- GCBankRemoveItem.cpp --Bank removes items
+| |-- GCBankRemoveItem.h
+| |-- GCBankSwapItem.cpp --Bank item exchange
+| |-- GCBankSwapItem.h
+| |-- GCBBSMessages.cpp -- BBS messages
+| |-- GCBBSMessages.h
+| |-- GCBoxItemList.cpp --Item pack list
+| |-- GCBoxItemList.h
+| |-- GCCanPickMissionItemList.cpp --Optional mission item list
+| |-- GCCanPickMissionItemList.h
+| |-- GCChannelError.cpp -- Boot error ( team )
+| |-- GCChannelError.h
+| |-- GCChannelResult.cpp --Guidance results ( team )
+| |-- GCChannelResult.h
+| |-- GCCharAction.cpp --Character action
+| |-- GCCharAction.h
+| |-- GCCharAllTitles.cpp --All the titles of the character
+| |-- GCCharAllTitles.h
+| |-- GCCharBaseAttrib.cpp --Basic attributes of the character
+| |-- GCCharBaseAttrib.h
+| |-- GCCharBUFF.cpp --Character BUFF
+| |-- GCCharBUFF.h
+| |-- GCCharDirectImpact.cpp --Character status
+| |-- GCCharDirectImpact.h
+| |-- GCCharDoAction.cpp --Character starts action
+| |-- GCCharDoAction.h
+| |-- GCCharEquipment.cpp --Character equipment information
+| |-- GCCharEquipment.h
+| |-- GCCharFirstLogin.cpp --Character 's first login
+| |-- GCCharFirstLogin.h
+| |-- GCCharIdle.cpp --Role rest 
+| |-- GCCharIdle.h
+| |-- GCCharImpactListUpdate.cpp -- Character status list update
+| |-- GCCharImpactListUpdate.h
+| |-- GCCharJump.cpp --Character jump
+| |-- GCCharJump.h
+| |-- GCCharModifyAction.cpp --Character modification action
+| |-- GCCharModifyAction.h
+| |-- GCCharMove.cpp --Character movement
+| |-- GCCharMove.h
+| |-- GCCharMoveResult.cpp --Character movement result
+| |-- GCCharMoveResult.h
+| |-- GCCharSkill_CreateBullet.cpp --Skill creates bullet
+| |-- GCCharSkill_CreateBullet.h
+| |-- GCCharSkill_Gather.cpp --Skill gathering
+| |-- GCCharSkill_Gather.h
+| |-- GCCharSkill_Gather_Modify.cpp --Skill gathering modification
+| |-- GCCharSkill_Gather_Modify.h
+| |-- GCCharSkill_Lead.cpp --Skill guide
+| |-- GCCharSkill_Lead.h
+| |-- GCCharSkill_Lead_Modify.cpp --Skill lead modification
+| |-- GCCharSkill_Lead_Modify.h
+| |-- GCCharSkill_Missed.cpp -- Skill lost
+| |-- GCCharSkill_Missed.h
+| |-- GCCharSkill_Send.cpp --Skill sending
+| |-- GCCharSkill_Send.h
+| |-- GCCharStopAction.cpp --Character stop action
+| |-- GCCharStopAction.h
+| |-- GCChat.cpp --Chat
+| |-- GCChat.h
+| |-- GCCityAttr.cpp --City attributes
+| |-- GCCityAttr.h
+| |-- GCCityError.cpp --City error
+| |-- GCCityError.h
+| |-- GCCityNotify.cpp --City message
+| |-- GCCityNotify.h
+| |-- GCConnect.cpp --Connection
+| |-- GCConnect.h
+| |-- GCCoolDownUpdate.cpp --Cooling update
+| |-- GCCoolDownUpdate.h
+| |-- GCDelObject.cpp -- delete object
+| |-- GCDelObject.h
+| |-- GCDetailAbilityInfo.cpp --Life skill detailed information
+| |-- GCDetailAbilityInfo.h
+| |-- GCDetailAttrib.cpp --Character attribute details
+| |-- GCDetailAttrib.h
+| |-- GCDetailAttrib_Pet.cpp --Pet attribute details
+| |-- GCDetailAttrib_Pet.h
+| |-- GCDetailBUFF.cpp -- BUFF detailed information
+| |-- GCDetailBUFF.h
+| |-- GCDetailEquipList.cpp -- Equipment list details
+| |-- GCDetailEquipList.h
+| |-- GCDetailHealsAndDamages.cpp -- Healing and damage ( ? )
+| |-- GCDetailHealsAndDamages.h
+| |-- GCDetailImpactListUpdate.cpp --Status list update
+| |-- GCDetailImpactListUpdate.h
+| |-- GCDetailSkillList.cpp --Skill list details
+| |-- GCDetailSkillList.h
+| |-- GCDetailSubEffectList.cpp --Effect details list
+| |-- GCDetailSubEffectList.h
+| |-- GCDetailXinFaList.cpp -- XinFa detailed information list
+| |-- GCDetailXinFaList.h
+| |-- GCDie.cpp -- Death
+| |-- GCDie.h
+| |-- GCDiscardEquipResult.cpp --Discard equipment
+| |-- GCDiscardEquipResult.h
+| |-- GCDiscardItemResult.cpp --Discard items
+| |-- GCDiscardItemResult.h
+| |-- GCEnterScene.cpp --Enter the scene
+| |-- GCEnterScene.h
+| |-- GCErrorAttack.cpp -- Attack error
+| |-- GCErrorAttack.h
+| |-- GCErrorSkill.cpp --Skill error
+| |-- GCErrorSkill.h
+| |-- GCExchangeApplyI.cpp --Transaction confirmation
+| |-- GCExchangeApplyI.h
+| |-- GCExchangeCancel.cpp --Transaction cancellation
+| |-- GCExchangeCancel.h
+| |-- GCExchangeError.cpp --Transaction error
+| |-- GCExchangeError.h
+| |-- GCExchangeEstablishI.cpp --Transaction establishment
+| |-- GCExchangeEstablishI.h
+| |-- GCExchangeSuccessIII.cpp --Transaction successful
+| |-- GCExchangeSuccessIII.h
+| |-- GCExchangeSynchConfirmII.cpp --Transaction synchronization confirmation
+| |-- GCExchangeSynchConfirmII.h
+| |-- GCExchangeSynchII.cpp -- transaction synchronization
+| |-- GCExchangeSynchII.h
+| |-- GCExchangeSynchLock.cpp --Transaction synchronization lock
+| |-- GCExchangeSynchLock.h
+| |-- GCFinger.cpp -- role information query
+| |-- GCFinger.h
+| |-- GCGuildApply.cpp -- Guild confirmation
+| |-- GCGuildApply.h
+| |-- GCGuild.cpp -- Guild information
+| |-- GCGuildError.cpp --Guild error
+| |-- GCGuildError.h
+| |-- GCGuild.h
+| |-- GCGuildReturn.cpp --Guild returns
+| |-- GCGuildReturn.h
+| |-- GCItemInfo.cpp --Item information
+| |-- GCItemInfo.h
+| |-- GCItemList.cpp --Item list
+| |-- GCItemList.h
+| |-- GCItemSynch.cpp --Item information synchronization
+| |-- GCItemSynch.h
+| |-- GCJoinMenpai.cpp -- Join the sect
+| |-- GCJoinMenpai.h
+| |-- GCLeaveScene.cpp --Leave the scene
+| |-- GCLeaveScene.h
+| |-- GCLevelUp.cpp -- Character upgrade
+| |-- GCLevelUp.h
+| |-- GCLevelUpResult.cpp -- Character upgrade result
+| |-- GCLevelUpResult.h
+| |-- GCMail.cpp --Mail
+| |-- GCMail.h
+| |-- GCManipulatePetRet.cpp --Pet operation
+| |-- GCManipulatePetRet.h
+| |-- GCManualAttrResult.cpp --Character attribute result
+| |-- GCManualAttrResult.h
+| |-- GCMenpaiInfo.cpp -- Sect information
+| |-- GCMenpaiInfo.h
+| |-- GCMinorPasswd.cpp --Secondary password
+| |-- GCMinorPasswd.h
+| |-- GCMissionAdd.cpp --Add task
+| |-- GCMissionAdd.h
+| |-- GCMissionList.cpp --Task list
+| |-- GCMissionList.h
+| |-- GCMissionModify.cpp --Task modification
+| |-- GCMissionModify.h
+| |-- GCMissionRemove.cpp --Task removal
+| |-- GCMissionRemove.h
+| |-- GCMissionResult.cpp --Task results
+| |-- GCMissionResult.h
+| |-- GCModifySpeed.cpp --Modify speed
+| |-- GCModifySpeed.h
+| |-- GCMonsterRealMove.cpp --Monster movement
+| |-- GCMonsterRealMove.h
+| |-- GCMonsterSpeak.cpp -- Monster bubbles
+| |-- GCMonsterSpeak.h
+| |-- GCMyBagList.cpp -- Your own backpack list
+| |-- GCMyBagList.h
+| |-- GCNewItemBox.cpp --New item box 
+| |-- GCNewItemBox.h
+| |-- GCNewItem.cpp --New item
+| |-- GCNewItem.h
+| |-- GCNewMonster.cpp --New monster generation
+| |-- GCNewMonster_Death.cpp --New monster death
+| |-- GCNewMonster_Death.h
+| |-- GCNewMonster.h
+| |-- GCNewMonster_Move.cpp --Movement of new monster
+| |-- GCNewMonster_Move.h
+| |-- GCNewPet.cpp --New pet
+| |-- GCNewPet_Death.cpp --New pet death
+| |-- GCNewPet_Death.h
+| |-- GCNewPet.h
+| |-- GCNewPet_Move.cpp --New pet movement
+| |-- GCNewPet_Move.h
+| |-- GCNewPlatform.cpp --New platform
+| |-- GCNewPlatform.h
+| |-- GCNewPlayer.cpp --New character
+| |-- GCNewPlayer_Death.cpp --New character death
+| |-- GCNewPlayer_Death.h
+| |-- GCNewPlayer.h
+| |-- GCNewPlayer_Move.cpp --New character movement
+| |-- GCNewPlayer_Move.h
+| |-- GCNewPortal.cpp -- New portal ( ? )
+| |-- GCNewPortal.h
+| |-- GCNewSkillObj.cpp --New skill object
+| |-- GCNewSkillObj.h
+| |-- GCNewSpecial.cpp --New special object
+| |-- GCNewSpecial.h
+| |-- GCNotifyChangeScene.cpp --Switch scene prompt
+| |-- GCNotifyChangeScene.h
+| |-- GCNotifyEquip.cpp --Equipment prompt
+| |-- GCNotifyEquip.h
+| |-- GCNotifyGoodBad.cpp --Good or bad prompt ( ? )
+| |-- GCNotifyGoodBad.h
+| |-- GCNotifyMail.cpp --Mail prompt
+| |-- GCNotifyMail.h
+| |-- GCNotifyTeamInfo.cpp --Team prompt
+| |-- GCNotifyTeamInfo.h
+| |-- GCObjTeleport.cpp -- Object transmission
+| |-- GCObjTeleport.h
+| |-- GCOperateResult.cpp -- Operation result
+| |-- GCOperateResult.h
+| |-- GCOtherAttack.cpp --Other attacks
+| |-- GCOtherAttack.h
+| |-- GCOtherEquip.cpp --Other equipment
+| |-- GCOtherEquip.h
+| |-- GCOtherSkill.cpp --Other skills
+| |-- GCOtherSkill.h
+| |-- GCPackage_SwapItem.cpp --Swap items
+| |-- GCPackage_SwapItem.h
+| |-- GCPackUpPacket.cpp --Update drop pack
+| |-- GCPackUpPacket.h
+| |-- GCPetPlacardList.cpp --Pet bulletin board list
+| |-- GCPetPlacardList.h
+| |-- GCPickResult.cpp -- Pick up results
+| |-- GCPickResult.h
+| |-- GCPlayerCallOf.cpp --Player call
+| |-- GCPlayerCallOf.h
+| |-- GCPlayerDie.cpp --Player death
+| |-- GCPlayerDie.h
+| |-- GCPlayerRealMove.cpp --Character movement
+| |-- GCPlayerRealMove.h
+| |-- GCPlayerRelive.cpp --Role resurrection
+| |-- GCPlayerRelive.h
+| |-- GCPlayerShopAcquireShopList.cpp -- List owned by the player's shop
+| |-- GCPlayerShopAcquireShopList.h
+| |-- GCPlayerShopApply.cpp --Player store confirmation
+| |-- GCPlayerShopApply.h
+| |-- GCPlayerShopBuyShop.cpp -- Buy player shop
+| |-- GCPlayerShopBuyShop.h
+| |-- GCPlayerShopError.cpp --Player store error
+| |-- GCPlayerShopError.h
+| |-- GCPlayerShopEstablish.cpp --Player store establishment
+| |-- GCPlayerShopEstablish.h
+| |-- GCPlayerShopMoney.cpp --Player shop money
+| |-- GCPlayerShopMoney.h
+| |-- GCPlayerShopOnSale.cpp --Player store listing
+| |-- GCPlayerShopOnSale.h
+| |-- GCPlayerShopOpenStall.cpp --Player shop opening
+| |-- GCPlayerShopOpenStall.h
+| |-- GCPlayerShopRecordList.cpp --Player store quantity list
+| |-- GCPlayerShopRecordList.h
+| |-- GCPlayerShopSaleOut.cpp --Player store items removed from shelves
+| |-- GCPlayerShopSaleOut.h
+| |-- GCPlayerShopStallStatus.cpp --Player store status
+| |-- GCPlayerShopStallStatus.h
+| |-- GCPlayerShopType.cpp --Player shop type
+| |-- GCPlayerShopType.h
+| |-- GCPlayerShopUpdateFavorite.cpp --Player store update favorites
+| |-- GCPlayerShopUpdateFavorite.h
+| |-- GCPlayerShopUpdatePartners.cpp --Player store update partners
+| |-- GCPlayerShopUpdatePartners.h
+| |-- GCPrescription.cpp --Prescription
+| |-- GCPrescription.h
+| |-- GCPrivateInfo.cpp --Private information
+| |-- GCPrivateInfo.h
+| |-- GCRelation.cpp --Relationship
+| |-- GCRelation.h
+| |-- GCRemoveCanPickMissionItem.cpp discards mission items that can be discarded
+| |-- GCRemoveCanPickMissionItem.h
+| |-- GCRemoveGemResult.cpp --Remove gem results
+| |-- GCRemoveGemResult.h
+| |-- GCRemovePet.cpp -- discard pet
+| |-- GCRemovePet.h
+| |-- GCReqResetAttrResult.cpp --Reset attribute results
+| |-- GCReqResetAttrResult.h
+| |-- GCRetChangeScene.cpp --Switch scene results
+| |-- GCRetChangeScene.h
+| |-- GCRetMissionDesc.cpp --Detailed description of the mission
+| |-- GCRetMissionDesc.h
+| |-- GCRetSetting.cpp -- Setting results
+| |-- GCRetSetting.h
+| |-- GCReturnTeamFollow.cpp --Return team follow
+| |-- GCReturnTeamFollow.h
+| |-- GCScriptCommand.cpp --Script execution
+| |-- GCScriptCommand.h
+| |-- GCShopBuy.cpp -- Store purchase
+| |-- GCShopBuy.h
+| |-- GCShopMerchandiseList.cpp -- Store merchandise list
+| |-- GCShopMerchandiseList.h
+| |-- GCShopRepair.cpp -- Shop repair
+| |-- GCShopRepair.h
+| |-- GCSShopSell.cpp --Shop sale
+| |-- GCSHopSell.h
+| |-- GCShopSoldList.cpp -- ?
+| |-- GCSHopSoldList.h
+| |-- GCShopUpdateMerchandiseList.cpp --Update the store merchandise list
+| |-- GCShopUpdateMerchandiseList.h
+| |-- GCSkill.cpp --Skills
+| |-- GCSkill.h
+| |-- GCSkillPrepare.cpp --Skill preparation
+| |-- GCSkillPrepare.h
+| |-- GCSpecialObj_ActNow.cpp --Special object in combat
+| |-- GCSpecialObj_ActNow.h
+| |-- GCSpecialObj_FadeOut.cpp -- Special object fade out
+| |-- GCSpecialObj_FadeOut.h
+| |-- GCSplitItemResult.cpp -- Split item result
+| |-- GCSplitItemResult.h
+| |-- GCStallAddItem.cpp --Add items to the stall
+| |-- GCStallAddItem.h
+| |-- GCStallApply.cpp -- Stall confirmation
+| |-- GCStallApply.h
+| |-- GCStallBuy.cpp -- Stall purchase
+| |-- GCStallBuy.h
+| |-- GCStallClose.cpp -- Stall closing
+| |-- GCStallClose.h
+| |-- GCStallError.cpp --Stall error
+| |-- GCStallError.h
+| |-- GCStallEstablish.cpp --Stall establishment
+| |-- GCStallEstablish.h
+| |-- GCStallItemPrice.cpp --Stall item price
+| |-- GCStallItemPrice.h
+| |-- GCStallOpen.cpp -- Stall opening
+| |-- GCStallOpen.h
+| |-- GCStallRemoveItem.cpp -- Remove items from the stall
+| |-- GCStallRemoveItem.h
+| |-- GCStudyXinfa.cpp --Learning Xinfa
+| |-- GCStudyXinfa.h
+| |-- GCSystemMsg.cpp --System information
+| |-- GCSystemMsg.h
+| |-- GCTargetListAndHitFlags.cpp --Status list and hit flag list
+| |-- GCTargetListAndHitFlags.h
+| |-- GCTeamAskApply.cpp -- Apply for team confirmation
+| |-- GCTeamAskApply.h
+| |-- GCTeamAskInvite.cpp --Team application
+| |-- GCTeamAskInvite.h
+| |-- GCTeamError.cpp --Team error
+| |-- GCTeamError.h
+| |-- GCTeamFollowErr.cpp --Team following error
+| |-- GCTeamFollowErr.h
+| |-- GCTeamFollowList.cpp --Team follow list
+| |-- GCTeamFollowList.h
+| |-- GCTeamLeaderAskInvite.cpp --The team leader sends a team application
+| |-- GCTeamLeaderAskInvite.h
+| |-- GCTeamList.cpp --Team list
+| |-- GCTeamList.h
+| |-- GCTeamMemberInfo.cpp --Team member information
+| |-- GCTeamMemberInfo.h
+| |-- GCTeamResult.cpp --Team result
+| |-- GCTeamResult.h
+| |-- GCTest.cpp --test
+| |-- GCTest.h
+| |-- GCUICommand.cpp -- UI commands
+| |-- GCUICommand.h
+| |-- GCUnEquipResult.cpp --Equipment results
+| |-- GCUnEquipResult.h
+| |-- GCUseEquipResult.cpp --Use equipment results
+| |-- GCUseEquipResult.h
+| |-- GCUseEquipSkillResult.cpp --Use equipment skill results
+| |-- GCUseEquipSkillResult.h
+| |-- GCUseGemResult.cpp --Use gem results
+| |-- GCUseGemResult.h
+| |-- GCUseItemResult.cpp --Use item results
+| |-- GCUseItemResult.h
+| |-- GCWorldTime.cpp --World time
+| |-- GCWorldTime.h
+| |-- GCXinfaStudyInfo.cpp -- Heart method learning information
+| |-- GCXinfaStudyInfo.h
+| |-- GGSceneNotify.cpp --Scene message
+| |-- GGSceneNotify.h
+| |-- GSAskData.cpp --Request data
+| |-- GSAskData.h
+| |-- GWAskChangeScene.cpp --Request to switch scenes
+| |-- GWAskChangeScene.h
+| |-- GWAskMail.cpp -- Request mail
+| |-- GWAskMail.h
+| |-- GWAskSceneData.cpp --Request scene data
+| |-- GWAskSceneData.h
+| |-- GWAskTeamInfo.cpp --Request team information
+| |-- GWAskTeamInfo.h
+| |-- GWAskTeamMemberInfo.cpp --Request team member information
+| |-- GWAskTeamMemberInfo.h
+| |-- GWAskUserData.cpp --Request user data
+| |-- GWAskUserData.h
+| |-- GWBatchMail.cpp --Batch mail
+| |-- GWBatchMail.h
+| |-- GWCallOfHuman.cpp --Calling character object
+| |-- GWCallOfHuman.h
+| |-- GWChangeMenpai.cpp --Change the sect
+| |-- GWChangeMenpai.h
+| |-- GWChannelCreate.cpp -- guide to create ( team )
+| |-- GWChannelCreate.h
+| |-- GWChannelDismiss.cpp --Guide removal ( team )
+| |-- GWChannelDismiss.h
+| |-- GWChannelInvite.cpp -- guide application ( team )
+| |-- GWChannelInvite.h
+| |-- GWChannelKick.cpp --Guide kick ( team )
+| |-- GWChannelKick.h
+| |-- GWChat.cpp --Chat
+| |-- GWChat.h
+| |-- GWCityApplyNewCity.cpp --Confirm the new city
+| |-- GWCityApplyNewCity.h
+| |-- GWCityAskInitInfo.cpp -- Request initialization information
+| |-- GWCityAskInitInfo.h
+| |-- GWCityClose.cpp --City closure
+| |-- GWCityClose.h
+| |-- GWCityCloseSuccess.cpp --City closed successfully
+| |-- GWCityCloseSuccess.h
+| |-- GWCityOpt.cpp --City operation
+| |-- GWCityOpt.h
+| |-- GWCommand.cpp -- Command line
+| |-- GWCommand.h
+| |-- GWEnterTeamFollow.cpp -- Enter team and follow
+| |-- GWEnterTeamFollow.h
+| |-- GWFinger.cpp --Query character information
+| |-- GWFinger.h
+| |-- GWGuild.cpp -- Guild information
+| |-- GWGuild.h
+| |-- GWHeartBeat.cpp --heartbeat packet
+| |-- GWHeartBeat.h
+| |-- GWLevelUp.cpp -- Character upgrade
+| |-- GWLevelUp.h
+| |-- GWMail.cpp --Mail
+| |-- GWMail.h
+| |-- GWNotifyUser.cpp --User prompt
+| |-- GWNotifyUser.h
+| |-- GWRelation.cpp --Role relationship
+| |-- GWRelation.h
+| |-- GWStopTeamFollow.cpp -- Stop team following
+| |-- GWStopTeamFollow.h
+| |-- GWSystemMsg.cpp --System message
+| |-- GWSystemMsg.h
+| |-- GWTeamApply.cpp --Team confirmation
+| |-- GWTeamApply.h
+| |-- GWTeamAppoint.cpp --Team transfer
+| |-- GWTeamAppoint.h
+| |-- GWTeamDismiss.cpp --Team disbandment
+| |-- GWTeamDismiss.h
+| |-- GWTeamInvite.cpp --Team application
+| |-- GWTeamInvite.h
+| |-- GWTeamKick.cpp --Team Kick
+| |-- GWTeamKick.h
+| |-- GWTeamLeaderRetInvite.cpp --Team leader invites team members
+| |-- GWTeamLeaderRetInvite.h
+| |-- GWTeamLeave.cpp --Leave the team
+| |-- GWTeamLeave.h
+| |-- GWTeamMemberEnterScene.cpp --Team members enter the scene
+| |-- GWTeamMemberEnterScene.h
+| |-- GWTeamRetApply.cpp --Team confirmation result
+| |-- GWTeamRetApply.h
+| |-- GWTeamRetInvite.cpp --Team invitation result
+| |-- GWTeamRetInvite.h
+| |-- GWUpdateTitle.cpp --Update title
+| |-- GWUpdateTitle.h
+| |-- ItemSynchStructDefine.h
+| |-- LBAskAuth.cpp --Request account verification
+| |-- LBAskAuth.h
+| |-- LCRetCharList.cpp --Request character list
+| |-- LCRetCharList.h
+| |-- LCRetCharLogin.cpp --Request login result
+| |-- LCRetCharLogin.h
+| |-- LCRetConnect.cpp --Connection result
+| |-- LCRetConnect.h
+| |-- LCRetCreateChar.cpp --Char creation result
+| |-- LCRetCreateChar.h
+| |-- LCRetDeleteChar.cpp --delete character result
+| |-- LCRetDeleteChar.h
+| |-- LCRetLogin.cpp --Login results
+| |-- LCRetLogin.h
+| |-- LCStatus.cpp --Status
+| |-- LCStatus.h
+| |-- LWAskCharLogin.cpp --Request character login
+| |-- LWAskCharLogin.h
+| |-- LWAskDeleteChar.cpp --Request to delete character
+| |-- LWAskDeleteChar.h
+| |-- Makefile
+| |-- PetDetailExtraStructDefine.h
+| |-- SGRetData.cpp --Data results
+| |-- SGRetData.h
+| |-- SSConnect.cpp --Connect
+| |-- SSConnect.h
+| |-- SSScenePlayerCount.cpp --Number of scene players
+| |-- SSScenePlayerCount.h
+| |-- WBRetValidateUser.cpp --Verify user results
+| |-- WBRetValidateUser.h
+| |-- WGCallOfHuman.cpp --Calling players
+| |-- WGCallOfHuman.h
+| |-- WGChannelError.cpp -- Boot error ( team )
+| |-- WGChannelError.h
+| |-- WGChannelResult.cpp --Guidance result ( team )
+| |-- WGChannelResult.h
+| |-- WGChat.cpp --Chat
+| |-- WGChat.h
+| |-- WGCityApplyNewCity.cpp --Confirm new city
+| |-- WGCityApplyNewCity.h
+| |-- WGCityAttr.cpp --City attributes
+| |-- WGCityAttr.h
+| |-- WGCityClose.cpp -- Close the city
+| |-- WGCityClose.h
+| |-- WGCityCloseSuccess.cpp --Close the city successfully
+| |-- WGCityCloseSuccess.h
+| |-- WGCityError.cpp --City error
+| |-- WGCityError.h
+| |-- WGCityInitInfo.cpp -- Initialize city information
+| |-- WGCityInitInfo.h
+| |-- WGFinger.cpp --Query character data
+| |-- WGFinger.h
+| |-- WGGuild.cpp --Guild
+| |-- WGGuildError.cpp --Guild error
+| |-- WGGuildError.h
+| |-- WGGuild.h
+| |-- WGGuildReturn.cpp --Guild returns
+| |-- WGGuildReturn.h
+| |-- WGMail.cpp --mail
+| |-- WGMail.h
+| |-- WGNotifyMail.cpp --Mail notification
+| |-- WGNotifyMail.h
+| |-- WGNotifyUser.cpp --User prompt
+| |-- WGNotifyUser.h
+| |-- WGRelation.cpp --Relationship
+| |-- WGRelation.h
+| |-- WGRetChangeScene.cpp --Switch scene
+| |-- WGRetChangeScene.h
+| |-- WGRetSceneData.cpp --Scene data results
+| |-- WGRetSceneData.h
+| |-- WGRetUserData.cpp --User data results
+| |-- WGRetUserData.h
+| |-- WGSystemMsg.cpp --System information
+| |-- WGSystemMsg.h
+| |-- WGTeamAskApply.cpp --Request team approval
+| |-- WGTeamAskApply.h
+| |-- WGTeamAskInvite.cpp --Request invitation to team
+| |-- WGTeamAskInvite.h
+| |-- WGTeamError.cpp --Team error
+| |-- WGTeamError.h
+| |-- WGTeamFollowList.cpp --Team follow list
+| |-- WGTeamFollowList.h
+| |-- WGTeamLeaderAskInvite.cpp --Team leader invites team
+| |-- WGTeamLeaderAskInvite.h
+| |-- WGTeamList.cpp --Team list
+| |-- WGTeamList.h
+| |-- WGTeamMemberInfo.cpp --Team member information
+| |-- WGTeamMemberInfo.h
+| |-- WGTeamResult.cpp --Team result
+| |-- WGTeamResult.h
+| |-- WGWorldTime.cpp --World time
+| |-- WGWorldTime.h
+| |-- WLRetCharLogin.cpp -- Role login result
+| |-- WLRetCharLogin.h
+| |-- WLRetDeleteChar.cpp --delete character result
+| `-- WLRetDeleteChar.h
+|-- PlayerStatus.h
+|-- Rand.cpp --Random class
+|-- Rand.h
+|-- ResultDefine.h
+|-- ScriptCommandStruct.cpp --Script command structure
+|-- ScriptCommandStruct.h
+|-- ShareMemAPI.cpp -- shared memory interface
+|-- ShareMemAPI.h
+|-- SkillDataMgr.cpp --Skill data manager
+|-- SkillDataMgr.h
+`-- Type.h -- variable type and common method definition header file
+
+Login server directory structure (./server/Login)
+.
+|-- DB --data module directory
+| |-- CharConfig.cpp --Character configuration data class
+| |-- CharConfig.h
+| |-- DBLogicManager.cpp --Data logic manager 
+| |-- DBLogicManager.h
+| |-- DBThread.cpp --Data thread class
+| |-- DBThread.h
+| |-- DBThreadManager.cpp --Data thread manager
+| |-- DBThreadManager.h
+| |-- LoginDBManager.cpp -- Login data manager
+| |-- LoginDBManager.h
+| `-- Makefile
+|-- Main -- Main directory
+| |-- ConnectManager.cpp --Connection manager
+| |-- ConnectManager.h
+| |-- Login.cpp -- Login server login class
+| |-- Login.h
+| |-- LoginMain.cpp --Entry file
+| |-- LoginMain.h
+| |-- Makefile
+| |-- ServerManager.cpp -- Server Manager
+| |-- ServerManager.h
+| |-- ServerThread.cpp --Server thread class
+| |-- ServerThread.h
+| |-- ThreadManager.cpp --Thread manager
+| `-- ThreadManager.h
+|-- Makefile
+|-- Packets --Message packets
+| |-- BLRetAuthHandler.cpp --Verification results
+| |-- CLAskCharListHandler.cpp --Request character list
+| |-- CLAskCharLoginHandler.cpp --Role request login
+| |-- CLAskCreateCharHander.cpp --Request to create a character
+| |-- CLAskDeleteCharHandler.cpp --Request to delete a character
+| |-- CLAskLoginHandler.cpp --Request user login
+| |-- CLConnectHandler.cpp --Connection
+| |-- LBAskAuthHandler.cpp --Request account verification
+| |-- LCRetCharListHandler.cpp --Return character list
+| |-- LCRetCharLoginHandler.cpp -- Returns the character login result
+| |-- LCRetConnectHandler.cpp --Return the connection result
+| |-- LCRetCreateCharHandler.cpp -- Returns the result of creating a character
+| |-- LCRetDeleteCharHandler.cpp -- Returns the result of deleting the character
+| |-- LCRetLoginHandler.cpp -- Returns the user login result
+| |-- LCStatusHandler.cpp --Login status
+| |-- LWAskCharLoginHandler.cpp --Request character login
+| |-- LWAskDeleteCharHandler.cpp --Request to delete character
+| |-- Makefile
+| |-- SSConnectHandler.cpp --Connect
+| |-- SSScenePlayerCountHandler.cpp --Number of scene users
+| |-- WLRetCharLoginHandler.cpp --Return the character login result
+| `-- WLRetDeleteCharHandler.cpp
+|-- Player --Player module directory
+| |-- LoginPlayer.cpp --Player login class
+| |-- LoginPlayer.h
+| |-- LoginPlayerManager.cpp --Player login manager
+| |-- LoginPlayerManager.h
+| |-- Makefile
+| |-- Player.cpp --Player class
+| |-- Player.h
+| |-- PlayerManager.cpp --Player manager
+| |-- PlayerManager.h
+| |-- PlayerPool.cpp --Player data pool
+| |-- PlayerPool.h
+| |-- ServerPlayer.cpp --Server player class
+| |-- ServerPlayer.h
+| |-- TurnPlayerQueue.cpp --Converted player queue
+| `-- TurnPlayerQueue.h
+|-- Process -- process module directory
+| |-- Makefile
+| |-- ProcessManager.cpp --Process Manager
+| |-- ProcessManager.h
+| |-- ProcessPlayerManager.cpp --Process player manager
+| `-- ProcessPlayerManager.h
+|-- stdafx.cpp
+`--stdafx.h
+
+Game server directory structure (./server/Server)
+.
+|-- Ability -- Life skills module
+| |-- AbilityCompound.cpp --Material synthesis class
+| |-- AbilityCompound.h
+| |-- Ability.cpp --Life skills class
+| |-- AbilityFoundry.cpp --Foundry class
+| |-- AbilityFoundry.h
+| |-- AbilityGather.cpp -- Collection class
+| |-- AbilityGatherFish.cpp -- Collection success class
+| |-- AbilityGatherFish.h
+| |-- AbilityGather.h
+| |-- AbilityGeneric.h
+| |-- Ability.h
+| |-- Ability.inl
+| |-- AbilityInlay.cpp -- Inlay class
+| |-- AbilityInlay.h
+| |-- AbilityMachining.cpp --Material processing class
+| |-- AbilityMachining.h
+| |-- AbilityManager.cpp --Life Skill Manager
+| |-- AbilityManager.h
+| |-- AbilityTailor.cpp -- Tailor class
+| |-- AbilityTailor.h
+| `-- Makefile
+|-- ActionModule --Action module
+| |-- ActionCallBack.cpp --Action callback class
+| |-- ActionCallBackForScript.cpp --Action callback script class
+| |-- ActionCallBackForScript.h
+| |-- ActionCallBackForSkill.cpp --Action callback skill class
+| |-- ActionCallBackForSkill.h
+| |-- ActionCallBack.h
+| |-- ActionDelegator.cpp --Action proxy class 
+| |-- ActionDelegator.h
+| |-- ActionLogic.cpp --Action interface class
+| |-- ActionLogic.h
+| |-- ChannelAction.cpp -- guide action class
+| |-- ChannelAction.h
+| |-- ChargeAction.cpp --Charge action class
+| |-- ChargeAction.h
+| |-- InstantAction.cpp -- Instant action class
+| |-- InstantAction.h
+| `-- Makefile
+|-- AI -- AI module
+| |-- AI_Character.cpp --Character AI class
+| |-- AI_Character.h
+| |-- AI_Human.cpp --Protagonist AI class
+| |-- AI_Human.h
+| |-- AI_Monster.cpp -- Monster AI class
+| |-- AI_Monster_Def.h
+| |-- AI_Monster.h
+| |-- AI_Pet.cpp --Pet AI class
+| |-- AI_PetDef.h
+| |-- AI_Pet.h
+| |-- AIScript.cpp -- AI script class
+| |-- AIScriptDef.h
+| |-- AIScriptFunction.cpp -- AI script method
+| |-- AIScriptFunction.h
+| |-- AIScript.h
+| |-- AvoidOverlap.h
+| |-- AxTrace.cpp --Monitor window output
+| |-- AxTrace.h
+| |-- Makefile
+| |-- Patrol.cpp --Monster patrol class
+| |-- Patrol.h
+| |-- SinCos.cpp -- sin cos ( math ? )
+| |-- SinCos.h
+| |-- State.cpp --State class
+| `-- State.h
+|-- Base -- basic module
+| |-- Config.cpp --Configuration class
+| |-- Config.h
+| |-- File.cpp --File operation class
+| |-- FileDef.h
+| |-- File.h
+| |-- FoxLuaScript.cpp -- Fox Lua script class
+| |-- FoxLuaScript.h
+| |-- foxscript.h
+| |-- FoxScript.h
+| |-- FoxWin32.h
+| |-- IDTable.cpp -- ID table class
+| |-- IDTable.h
+| |-- Ini.cpp -- ini file operation class
+| |-- Ini.h
+| |-- Log.cpp --Log class
+| |-- LogDefine.cpp -- Common log definition methods
+| |-- LogDefine.h
+| |-- Log.h
+| |-- Lua.h
+| |-- LuaLib.h
+| |-- Makefile
+| |-- ObjPool.cpp --Object pool ( discarded )
+| |-- ObjPool.h
+| |-- PetConfig.h
+| |-- ScriptDef.h
+| |-- StrTable.cpp -- string table class
+| |-- StrTable.h
+| |-- Thread.cpp --Thread class
+| |-- Thread.h
+| |-- TimeManager.cpp --Time manager
+| `-- TimeManager.h
+|-- DB --Data module
+| |-- HumanDB.cpp -- Main character data class
+| |-- HumanDB.h
+| |-- HumanDB.inl
+| `-- Makefile
+|-- EventModule --Event module 
+| |-- EventCore.cpp --Event cache logic core
+| |-- EventCore.h
+| |-- EventStruct.cpp --Event structure
+| |-- EventStruct.h
+| `-- Makefile
+|-- Item --Item module
+| |-- GrowPointManager.cpp --Growth point manager
+| |-- GrowPointManager.h
+| |-- GrowPointManager.inl
+| |-- HumanItemContainer.cpp --Player item container class 
+| |-- HumanItemContainer.h
+| |-- HumanItemLogic.cpp --Player item operation class
+| |-- HumanItemLogic.h
+| |-- HumanPetContainer.cpp --Player pet container class
+| |-- HumanPetContainer.h
+| |-- ItemContainer.cpp --Item container class
+| |-- ItemContainer.h
+| |-- Item.cpp --Item class
+| |-- Item.h
+| |-- ItemHelper.cpp --Item helper class
+| |-- ItemHelper.h
+| |-- Item.inl
+| |-- ItemManager.cpp --Item Manager
+| |-- ItemManager.h
+| |-- ItemOperator.cpp -- Operation encapsulation class for items and item containers
+| |-- ItemOperator.h
+| |-- ItemRuler.cpp --Item rule class
+| |-- ItemRuler.h
+| |-- ItemTable.cpp --Item basic data table operation class
+| |-- ItemTable.h
+| |-- ItemTypes.h
+| `-- Makefile
+|-- Main -- Main module
+| |-- ClientManager.cpp --Client Manager
+| |-- ClientManager.h
+| |-- DaemonThread.cpp -- daemon thread class
+| |-- DaemonThread.h
+| |-- DiePenaltyManager.cpp --Death penalty data manager
+| |-- DiePenaltyManager.h
+| |-- GameTable.cpp --Data table class (*.txt)
+| |-- GameTable.h
+| |-- GUIDManager.cpp -- GUID manager
+| |-- GUIDManager.h
+| |-- MachineManager.cpp --Machine manager
+| |-- MachineManager.h
+| |-- Makefile
+| |-- Performance.cpp -- a class that saves and counts the execution efficiency and operation status of each module in the system
+| |-- Performance.h
+| |-- RecoverManager.cpp --Data Recovery Manager
+| |-- RecoverManager.h
+| |-- RecoverThread.cpp --Thread recovery class
+| |-- RecoverThread.h
+| |-- Server.cpp --Game server entry
+| |-- Server.h
+| |-- ServerManager.cpp -- Server Manager
+| |-- ServerManager.h
+| |-- ServerThread.cpp --Server thread class
+| |-- ServerThread.h
+| |-- ShareMemManager.cpp -- Shared memory manager
+| |-- ShareMemManager.h
+| |-- ThreadManager.cpp --Thread manager
+| |-- ThreadManager.h
+| |-- ThreadPool.cpp --Thread pool manager
+| |-- ThreadPool.h
+| |-- User.cpp --User class
+| |-- User.h
+| |-- UserPool.cpp --User pool class
+| |-- UserPool.h
+| |-- WorldManager.cpp --World manager
+| |-- WorldManager.h
+| |-- XinfaStudySpendMgr.cpp -- Xinfa study consumption manager
+| `-- XinfaStudySpendMgr.h
+|-- Makefile
+|-- MenPai --MenPai module (job)
+| |-- DaLi.cpp --Dali ( Tianlong )
+| |-- DaLi.h
+| |-- EMei.cpp --Emei
+| |-- EMei.h
+| |-- GaiBang.cpp -- Beggars' Gang
+| |-- GaiBang.h
+| |-- Makefile
+| |-- MenPai.cpp -- Sect class
+| |-- MenPai.h
+| |-- MenPais.h
+| |-- MingJiao.cpp --MingJiao
+| |-- MingJiao.h
+| |-- ShaoLin.cpp -- Shaolin
+| |-- ShaoLin.h
+| |-- TianShan.cpp -- TianShan
+| |-- TianShan.h
+| |-- WuDang.cpp --Wudang
+| |-- WuDang.h
+| |-- WuMenPai.cpp --No sect
+| |-- WuMenPai.h
+| |-- XiaoYao.cpp --XiaoYao
+| |-- XiaoYao.h
+| |-- XingXiu.cpp -- Xingxiu
+| `-- XingXiu.h
+|-- Mission -- Mission module
+| |-- Human_Mission.cpp --Player mission class ( abandoned To be implemented )
+| |-- Human_Mission.h
+| |-- Makefile
+| |-- MissionManager.cpp --Task Manager
+| `-- MissionManager.h
+|-- Obj -- object module
+| |-- Attributes.h
+| |-- CharacterManager.cpp --Character manager
+| |-- CharacterManager.h
+| |-- HumanManager.cpp -- Single role manager
+| |-- HumanManager.h
+| |-- ItemBoxManager.cpp --Item box manager
+| |-- ItemBoxManager.h
+| |-- ItemBoxPool.cpp --Item box pool class
+| |-- ItemBoxPool.h
+| |-- Makefile
+| |-- MonsterManager.cpp -- Monster manager
+| |-- MonsterManager.h
+| |-- MonsterPool.cpp -- Monster pool class
+| |-- MonsterPool.h
+| |-- Obj_Character_Attributes.cpp --Character attribute class
+| |-- Obj_Character.cpp --Character object class
+| |-- Obj_Character_DirtyFlag.cpp --Dirty flag operation class for character layer attributes
+| |-- Obj_Character_Event.cpp --Character event class
+| |-- Obj_Character.h
+| |-- Obj_Character_Impact.cpp --Effect processing class for the character
+| |-- Obj_Character_Logic.cpp --Character operation class
+| |-- Obj_Character_MenPai.cpp --Character sect class
+| |-- Obj_Character_Skill.cpp --Character skill class
+| |-- Obj.cpp --Object class
+| |-- Obj_Dynamic.cpp --Object dynamic class
+| |-- Obj_Dynamic.h
+| |-- Obj.h
+| |-- Obj_Human_Attributes.cpp -- single attribute class for characters
+| |-- Obj_Human_AttrRefesh.cpp --Character single refresh attribute class
+| |-- Obj_Human_Calc.cpp --Character single calculation class
+| |-- Obj_Human.cpp -- single character class
+| |-- Obj_Human.h
+| |-- Obj_Human.inl
+| |-- Obj_Human_Skill.cpp -- single character skill class
+| |-- Obj_ItemBox.cpp --Item grid object class
+| |-- Obj_ItemBox.h
+| |-- Obj_ItemBox.inl
+| |-- ObjList.h
+| |-- ObjManager.cpp --Object manager
+| |-- ObjManager.h
+| |-- Obj_Monster_Attributes.cpp --Monster attribute class
+| |-- Obj_Monster_AttrRefesh.cpp -- Monster attribute refresh class
+| |-- Obj_Monster_Calc.cpp --Monster calculation class
+| |-- Obj_Monster.cpp -- Monster class
+| |-- Obj_Monster.h
+| |-- Obj_Monster_Skill.cpp --Monster skill class
+| |-- Obj_Pet_Attributes.cpp --Pet attribute class
+| |-- Obj_Pet_AttrRefesh.cpp --Pet attribute refresh class
+| |-- Obj_Pet_Calc.cpp --Pet calculation class
+| |-- Obj_Pet.cpp --Pet class
+| |-- Obj_Pet.h
+| |-- Obj_Pet.inl
+| |-- Obj_Pet_Skill.cpp --Pet skill class
+| |-- Obj_Platform.cpp --Operation platform class
+| |-- Obj_Platform.h
+| |-- ObjSingleManager.cpp -- Single manager
+| |-- ObjSingleManager.h
+| |-- Obj_Special.cpp --Special object class
+| |-- Obj_Special.h
+| |-- Obj_Static.cpp --Static object class
+| |-- Obj_Static.h
+| |-- PetManager.cpp --Pet manager
+| |-- PetManager.h
+| |-- PetPlacard.cpp --Pet bulletin board class
+| |-- PetPlacard.h
+| |-- PetPool.cpp --Pet pool class
+| |-- PetPool.h
+| |-- PlatformManager.cpp --Platform Manager
+| |-- PlatformManager.h
+| |-- PlatformPool.cpp --Platform pool class
+| |-- PlatformPool.h
+| |-- SpecialManager.cpp --Special manager
+| |-- SpecialManager.h
+| |-- SpecialPool.cpp --Special pool class
+| `-- SpecialPool.h
+|-- Other --Other modules
+| |-- BBS.cpp -- BBS class
+| |-- BBS.h
+| |-- ExchangBox.cpp -- Trading box class
+| |-- ExchangBox.h
+| |-- HumanRelation.cpp --Role relationship class
+| |-- HumanRelation.h
+| |-- Makefile
+| |-- PlayerShop.cpp --Player shop class
+| |-- PlayerShopDefine.h
+| |-- PlayerShop.h
+| |-- PlayerShopManager.cpp --Player Shop Manager
+| |-- PlayerShopManager.h
+| |-- PlayerShopPool.cpp --Player shop pool class
+| |-- PlayerShopPool.h
+| |-- PlayerStallBox.cpp --Player stall box class
+| |-- PlayerStallBox.h
+| |-- Record.h
+| |-- RecordOpt.cpp --Data operation class
+| |-- RecordOpt.h
+| |-- ShopManager.cpp --Shop manager
+| |-- ShopManager.h
+| |-- StallBox.cpp -- Stall box class
+| |-- StallBox.h
+| |-- StallInfoManager.cpp -- Stall information manager
+| |-- StallInfoManager.h
+| |-- StoreManager.cpp --Storage manager
+| `-- StoreManager.h
+|-- Packets -- message packet module
+| |-- CGApplyPirvateInfoHandler.cpp --Confirm private message
+| |-- CGAskChangeSceneHandler.cpp --Request to switch scenes
+| |-- CGAskDetailAbilityInfoHandler.cpp --Request detailed information on life skills
+| |-- CGAskDetailAttribHandler.cpp --Request attribute details
+| |-- CGAskDetailEquipListHandler.cpp --Request equipment list details
+| |-- CGAskDetailSkillListHandler.cpp --Request skill list details
+| |-- CGAskDetaiXinFaListHandler.cpp --Request detailed information of XinFa list
+| |-- CGAskItemInfoHandler.cpp --Request item information
+| |-- CGAskJoinMenpaiHandler.cpp --Request to join a sect
+| |-- CGAskLeanAbilityHandler.cpp --Request to learn life skills
+| |-- CGAskLockObjHandler.cpp --Request to lock the object
+| |-- CGAskMailHandler.cpp --Request to send email
+| |-- CGAskMissionDescHander.cpp --Request mission details
+| |-- CGAskMissionListHandler.cpp --Request mission list
+| |-- CGAskMyBagListHandler.cpp --Request your own backpack list
+| |-- CGAskPrivateInfoHandler.cpp -- Request private information
+| |-- CGAskSettingHandler.cpp --Request configuration information
+| |-- CGAskStudyXinfaHandler.cpp --Request to learn Xinfa
+| |-- CGAskTeamFollowHandler.cpp --Request team following
+| |-- CGAskTeamInfoHandler.cpp --Request team information
+| |-- CGAskTeamMemberInfoHandler.cpp --Request team member information
+| |-- CGAttackHandler.cpp --attack
+| |-- CGBankAcquireListHandler.cpp --Bank owned list
+| |-- CGBankAddItemHandler.cpp --Add items to the bank
+| |-- CGBankCloseHandler.cpp --Close the bank
+| |-- CGBankMoneyHandler.cpp --Bank money operation
+| |-- CGBankRemoveItemHandler.cpp --Remove items from the bank
+| |-- CGBankSwapItemHandler.cpp -- Swapping items in the bank
+| |-- CGBBSApplyHandler.cpp -- BBS confirmation
+| |-- CGBBSSychMessagesHandler.cpp -- BBS synchronization messages
+| |-- CGBuyHandler.cpp -- Purchase
+| |-- CGChannelCreateHandler.cpp --Guide creation ( team )
+| |-- CGChannelDismissHandler.cpp --Guide disbanding ( team )
+| |-- CGChannelInviteHandler.cpp --Guide application ( team )
+| |-- CGChannelKickHandler.cpp --Guide kick ( team )
+| |-- CGCharAllTitlesHandler.cpp --All the titles of the character
+| |-- CGCharAskBaseAttribHandler.cpp --Request basic attributes of the character
+| |-- CGCharAskEquipmentHandler.cpp --Request character equipment information
+| |-- CGCharCancelSkillHandler.cpp --Cancel skills
+| |-- CGCharDefaultEventHander.cpp --Character default event
+| |-- CGCharIdleHandler.cpp --Character Idle
+| |-- CGCharJumpHandler.cpp --Character jump
+| |-- CGCharMoodStateHandler.cpp --Character mood state
+| |-- CGCharMoveHandler.cpp --Character movement
+| |-- CGCharPositionWarpHandler.cpp --Character pathfinding route
+| |-- CGCharSitHandler.cpp --Character meditation
+| |-- CGCharStopLogicHandler.cpp --Character stop action
+| |-- CGCharUpdateCurTitleHandler.cpp --Update the character's current title
+| |-- CGCharUseSkillHandler.cpp --Character use skills
+| |-- CGChatHandler.cpp --Chat
+| |-- CGCityAskAttrHandler.cpp --Request city data
+| |-- CGCommandHandler.cpp --Command
+| |-- CGConnectHandler.cpp --Connect
+| |-- CGDiscardEquipHandler.cpp --Discard equipment
+| |-- CGDiscardItemHandler.cpp --Discard items
+| |-- CGDispelBuffReqHandler.cpp --Cancel status
+| |-- CGDoEventHandler.cpp --Trigger event
+| |-- CGEnterSceneHandler.cpp --Enter the scene
+| |-- CGEnvRequestHandler.cpp --Enter the scene and return
+| |-- CGEventRequestHander.cpp --Event return
+| |-- CGExchangeApplyIHandler.cpp --Transaction passed
+| |-- CGExchangeCancelHandler.cpp --Transaction cancellation
+| |-- CGExchangeOkIIIHandler.cpp --Transaction successful
+| |-- CGExchangeReplyIHandler.cpp --Transaction confirmation
+| |-- CGExchangeSynchItemIIHandler.cpp --Transaction synchronization item information
+| |-- CGExchangeSynchLockHandler.cpp --Synchronous lock information
+| |-- CGExchangeSynchMoneyIIHandler.cpp -- Synchronize money information
+| |-- CGExecuteScriptHandler.cpp --Execute script
+| |-- CGFingerHandler.cpp --query
+| |-- CGGemCompoundHandler.cpp --Gem synthesis
+| |-- CGGuildApplyHandler.cpp --Guild passed
+| |-- CGGuildHandler.cpp --Guild
+| |-- CGGuildJoinHandler.cpp --Guild joining
+| |-- CGHeartBeatHandler.cpp --Heartbeat packet
+| |-- CGIssuePetPlacardHandler.cpp --Confirm pet notice board
+| |-- CGItemSynchHandler.cpp --Item synchronization
+| |-- CGLeaveSceneHandler.cpp --Leave the scene
+| |-- CGLockTargetHandler.cpp --Lock mark
+| |-- CGMailHandler.cpp --Send email
+| |-- CGManipulatePetHandler.cpp --Pet operation
+| |-- CGMinorPasswordHandler.cpp --Secondary password
+| |-- CGMissionAbandonHander.cpp --Abandon the task
+| |-- CGMissionAcceptHander.cpp --Accept the task
+| |-- CGMissionCheckHandler.cpp -- Check task
+| |-- CGMissionContinueHander.cpp --Continue task
+| |-- CGMissionRefuseHander.cpp --Reject task
+| |-- CGMissionSubmitHander.cpp --Submit task
+| |-- CGModifySettingHandler.cpp --Modify configuration
+| |-- CGMoveHandler.cpp --Move
+| |-- CGMyEquipHandler.cpp --Own equipment
+| |-- CGOpenItemBoxHander.cpp --Open the item box
+| |-- CGOtherEquipHandler.cpp --Other equipment
+| |-- CGPackage_SwipItemHandle.cpp -- Drop package item exchange
+| |-- CGPackUpPacketHandler.cpp --drop packet update ( just tidy up )
+| |-- CGPickBoxItemHandler.cpp --Pick up item grid
+| |-- CGPlayerCallOfResultHandler.cpp --Call player results
+| |-- CGPlayerDieResultHandler.cpp --Character death result
+| |-- CGPlayerShopAcquireItemListHandler.cpp --List of items owned by the player's store
+| |-- CGPlayerShopAcquireShopListHandler.cpp --Player shop has a shop list
+| |-- CGPlayerShopApplyHandler.cpp --Player store confirmation
+| |-- CGPlayerShopAskForRecordHandler.cpp --Request to restore the player store
+| |-- CGPlayerShopBuyItemHandler.cpp --Player shop purchase items
+| |-- CGPlayerShopBuyShopHandler.cpp --Purchase player store
+| |-- CGPlayerShopDescHandler.cpp --Modify the player store speed
+| |-- CGPlayerShopEstablishHandler.cpp --Player store establishment
+| |-- CGPlayerShopFavoriteHandler.cpp -- Apply for listing items
+| |-- CGPlayerShopMoneyHandler.cpp --Player store money operation
+| |-- CGPlayerShopNameHandler.cpp --Change the player's shop name
+| |-- CGPlayerShopOnSaleHandler.cpp --Player store listing
+| |-- CGPlayerShopOpenStallHandler.cpp --Player shop opens the shop
+| |-- CGPlayerShopPartnerHandler.cpp --Player store partner operation
+| |-- CGPlayerShopSaleOutHandler.cpp --Player store removal
+| |-- CGPlayerShopSizeHandler.cpp --Player shop size
+| |-- CGPlayerShopTypeHandler.cpp --Player shop type
+| |-- CGRelationHandler.cpp --Relation
+| |-- CGRemoveGemHandler.cpp --Remove gems
+| |-- CGReqLevelUpHandler.cpp -- Upgrade results
+| |-- CGReqManualAttrHandler.cpp -- Upgrade attribute operation
+| |-- CGReqResetAttrHandler.cpp --Reset attributes
+| |-- CGReturnTeamFollowHandler.cpp --Return team follow
+| |-- CGSetMoodToHeadHandler.cpp --Set mood to the top of the head
+| |-- CGSetPetAttribHandler.cpp --Set pet attributes
+| |-- CGShopBuyHandler.cpp -- Store purchase
+| |-- CGShopCloseHandler.cpp --Store closing
+| |-- CGShopRepairHandler.cpp -- Shop Repair
+| |-- CGSShopSellHandler.cpp --Shop sale
+| |-- CGSkillHandler.cpp --Skills
+| |-- CGSplitItemHandler.cpp --Split items
+| |-- CGStallAddItemHandler.cpp --Add items to the stall
+| |-- CGStallApplyHandler.cpp -- Stall confirmation
+| |-- CGStallBuyHandler.cpp -- Stall purchase
+| |-- CGStallCloseHandler.cpp -- Stall closing
+| |-- CGStallDefaultPageHandler.cpp --Stall default page
+| |-- CGStallEstablishHandler.cpp --Stall establishment
+| |-- CGStallItemPriceHandler.cpp -- Stall item price
+| |-- CGStallOpenHandler.cpp -- Stall opening
+| |-- CGStallRemoveItemHandler.cpp -- Remove items from the stall
+| |-- CGStallShopNameHandler.cpp --Shop name
+| |-- CGStopTeamFollowHandler.cpp --Stop team following
+| |-- CGSystemMsgHandler.cpp --System information
+| |-- CGTeamApplyHandler.cpp --Team passed
+| |-- CGTeamAppointHandler.cpp --Captain transfer
+| |-- CGTeamDismissHandler.cpp --Team disbandment
+| |-- CGTeamInviteHandler.cpp --Team application
+| |-- CGTeamKickHandler.cpp --Team kicks people
+| |-- CGTeamLeaderRetInviteHandler.cpp --Team captain invites team members
+| |-- CGTeamLeaveHandler.cpp --Leave the team
+| |-- CGTeamRetApplyHandler.cpp -- Team pass result
+| |-- CGTeamRetInviteHandler.cpp --Team invitation result
+| |-- CGTestHandler.cpp --test
+| |-- CGUnEquipHandler.cpp --Unload equipment
+| |-- CGUseAbilityHandler.cpp --Use life skills
+| |-- CGUseEquipHandler.cpp --Use equipment
+| |-- CGUseEquipSkillHandler.cpp --Use equipment skills
+| |-- CGUseGemHandler.cpp --Use gems
+| |-- CGUseItemHandler.cpp --Use items
+| |-- GCCityAttrHandler.cpp --City details data
+| |-- GCCityErrorHandler.cpp --City error
+| |-- GCCityNotifyHandler.cpp --City message
+| |-- GCHandler.cpp --Message ( all)
+| |-- GGSceneNotifyHandler.cpp --Scene message
+| |-- GWCityApplyNewCityHandler.cpp --Confirm the new city
+| |-- GWCityAskInitInfoHandler.cpp --Request to initialize city data
+| |-- GWCityCloseHandler.cpp -- Close the city
+| |-- GWCityCloseSuccessHandler.cpp --Close the city successfully
+| |-- GWCityOptHandler.cpp --City operation
+| |-- GWHandler.cpp -- Server -> World message processing class
+| |-- Makefile
+| |-- SSConnectHandler.cpp -- shared memory connection
+| |-- SSScenePlayerCountHandler.cpp --Shared memory scene user statistics
+| |-- WGCallOfHumanHandler.cpp --Calling characters
+| |-- WGChannelErrorHandler.cpp -- Boot error
+| |-- WGChannelResultHandler.cpp -- Boot results
+| |-- WGChatHandler.cpp --Chat
+| |-- WGCityApplyNewCityHandler.cpp --Confirm new city
+| |-- WGCityAttrHandler.cpp --City attributes
+| |-- WGCityCloseHandler.cpp --City closure
+| |-- WGCityCloseSuccessHandler.cpp --City closed successfully
+| |-- WGCityErrorHandler.cpp --City error
+| |-- WGCityInitInfoHandler.cpp --City initialization
+| |-- WGFingerHandler.cpp --Query role
+| |-- WGGuildErrorHandler.cpp --Guild error
+| |-- WGGuildHandler.cpp -- Guild message management
+| |-- WGGuildReturnHandler.cpp --Guild returns
+| |-- WGMailHandler.cpp --Send email
+| |-- WGNotifyMailHandler.cpp --Mail notification message
+| |-- WGNotifyUserHandler.cpp --User prompt message
+| |-- WGRelationHandler.cpp --Relationship
+| |-- WGRetChangeSceneHandler.cpp --Switch scene results
+| |-- WGRetSceneDataHandler.cpp --Scene data results
+| |-- WGRetUserDataHandler.cpp --User data results
+| |-- WGSystemMsgHandler.cpp --System information
+| |-- WGTeamAskApplyHandler.cpp --Request team approval
+| |-- WGTeamAskInviteHandler.cpp --Request team invitation
+| |-- WGTeamErrorHandler.cpp --Team error
+| |-- WGTeamFollowListHandler.cpp --Team follow list
+| |-- WGTeamLeaderAskInviteHandler.cpp --Captain invitation
+| |-- WGTeamListHandler.cpp --Team list
+| |-- WGTeamMemberInfoHandler.cpp --Team member information
+| |-- WGTeamResultHandler.cpp --Team result
+| `-- WGWorldTimeHandler.cpp --World time
+|-- Player --Player module
+| |-- GamePlayer.cpp --Game player class
+| |-- GamePlayer.h
+| |-- IncomingPlayerManager.cpp --Player connection manager
+| |-- IncomingPlayerManager.h
+| |-- Makefile
+| |-- Player.cpp --Player class
+| |-- Player.h
+| |-- PlayerManager.cpp --Player manager
+| |-- PlayerManager.h
+| |-- PlayerPool.cpp --Player pool class
+| |-- PlayerPool.h
+| |-- RecyclePlayerManager.cpp --Player recycling manager
+| |-- RecyclePlayerManager.h
+| |-- ServerPlayer.cpp --Server player class
+| `-- ServerPlayer.h
+|-- Scene -- Scene module
+| |-- AreaManager.cpp -- Area Manager
+| |-- AreaManager.h
+| |-- ChatPipe.cpp --Chat class
+| |-- ChatPipe.h
+| |-- CopySceneManager.cpp --Copy scene manager
+| |-- CopySceneManager.h
+| |-- DynamicSceneManager.cpp --Dynamic scene manager
+| |-- DynamicSceneManager.h
+| |-- Makefile
+| |-- Map.cpp --Map class
+| |-- Map.h
+| |-- MapUnit.h
+| |-- PathFinder.cpp --Navigation class
+| |-- PathFinder.h
+| |-- Scan --Search module
+| | |-- Makefile
+| | |-- ScanOperator_ActiveTeammates.cpp --Search surrounding enemy obj class
+| | |-- ScanOperator_ActiveTeammates.h
+| | |-- ScanOperator_AEImpact.cpp --Search operation class for effective area status
+| | |-- ScanOperator_AEImpact.h
+| | |-- ScanOperator_AESkill.cpp --Search operation class for area- effective skills
+| | |-- ScanOperator_AESkill.h
+| | |-- ScanOperator_Chat.cpp --Search for surrounding obj that meet the requirements , and the user sends a chat message
+| | |-- ScanOperator_Chat.h
+| | |-- ScanOperator_Enemy.cpp --Search surrounding enemy obj class
+| | |-- ScanOperator_Enemy.h
+| | |-- ScanOperator_Teammate.cpp --Search template
+| | |-- ScanOperator_Teammate.h
+| | |-- ScanOpt_SObj_ScanChar.cpp -- Operation of special object search trap
+| | |-- ScanOpt_SObj_ScanChar.h
+| | |-- ScanOpt_SObj_ScanTrap.cpp -- Operation of special object search trap
+| | `-- ScanOpt_SObj_ScanTrap.h
+| |-- ScanOperator.cpp --Scene search class
+| |-- ScanOperator.h
+| |-- Scene_Core.cpp --Scene core class
+| |-- Scene.cpp
+| |-- Scene_Event.cpp --Scene event class
+| |-- SceneFile.h
+| |-- Scene.h
+| |-- Scene.inl
+| |-- SceneManager.cpp --Scene manager
+| |-- SceneManager.h
+| |-- ScenePlayerManager.cpp --Scene player manager
+| |-- ScenePlayerManager.h
+| |-- SceneScan.cpp -- Scene search class
+| |-- SceneThread.cpp --Scene thread class
+| |-- SceneThread.h
+| |-- Zone.cpp --Zone class
+| `-- Zone.h
+|-- Script --Script module
+| |-- ExportLuaFn.h
+| |-- FoxScriptEngine.lib
+| |-- LuaFnMacro.h
+| |-- LuaFnRegister.cpp -- lua method registration
+| |-- LuaFnRegister.h
+| |-- LuaFnTbl_Ability.h
+| |-- LuaFnTbl_Attr.h
+| |-- LuaFnTbl_Battle.h
+| |-- LuaFnTbl_City.h
+| |-- LuaFnTbl_DoAction.h
+| |-- LuaFnTbl_Guild.h
+| |-- LuaFnTbl_Misc.h
+| |-- LuaFnTbl_Mission.h
+| |-- LuaFnTbl_Pet.h
+| |-- LuaFnTbl_PetPlacard.h
+| |-- LuaFnTbl_Relation.h
+| |-- LuaFnTbl_Scene.h
+| |-- LuaFnTbl_Shop.h
+| |-- LuaFnTbl_Team.h
+| |-- LuaInterface.cpp -- lua interface
+| |-- LuaInterface.h
+| |-- lua.lib
+| |-- LuaLibDll.lib
+| |-- Makefile
+| |-- MisBuf.h
+| |-- NeedAddLuaFn.h
+| |-- SceneTimer.cpp -- Scene timer
+| |-- SceneTimer.h
+| `-- ScriptFuncForDesigner.h
+|-- Skills --Skills module
+| |-- Combat_Core.cpp --Combat core class
+| |-- Combat_Core.h
+| |-- ConditionAndDeplete_Core.cpp --Skill base class
+| |-- ConditionAndDeplete_Core.h
+| |-- Impact_Core.cpp --Effect core module 
+| |-- Impact_Core.h
+| |-- ImpactLogic --Effect operation module
+| | |-- DS_Emei014.cpp --Emei Yijin Bone Strengthening Effect ( abandoned )
+| | |-- DS_WuDang010.cpp -- abandoned
+| | |-- ImpactLogic.cpp --Effect base class
+| | |-- ImpactLogic.h
+| | |-- Makefile
+| | |-- SOT_Dali007.cpp -- abandoned
+| | |-- SOT_Dali012.cpp -- Abandoned
+| | |-- SOT_Emei016.cpp -- abandoned
+| | |-- SOT_ProlongSpecificImpact.cpp -- obsolete
+| | |-- SOT_TianShan017.cpp -- abandoned
+| | |-- SOT_Unbreakable.cpp -- Invincible ( abandoned )
+| | |-- SOT_XingXiu017.cpp -- abandoned
+| | |-- StdImpact000.cpp --Effect -- Notify the client separately to display special effects
+| | |-- StdImpact000.h
+| | |-- StdImpact001.cpp --Effect -- One -time damage without type
+| | |-- StdImpact001.h
+| | |-- StdImpact002.cpp --Effect -- One -time percentage damage without type
+| | |-- StdImpact002.h
+| | |-- StdImpact003.cpp -- Effects -- One-time damage by type
+| | |-- StdImpact003.h
+| | |-- StdImpact004.cpp --Effects -- Direct modification of life, magic, rage, and combo points
+| | |-- StdImpact004.h
+| | |-- StdImpact005.cpp --Effect -- Directly modify the percentage of life, magic, rage, and combo points
+| | |-- StdImpact005.h
+| | |-- StdImpact006.cpp --Effect -- Restore pet 's health and happiness
+| | |-- StdImpact006.h
+| | |-- StdImpact007.cpp --Effect -- Restore pet 's health and happiness by percentage
+| | |-- StdImpact007.h
+| | |-- StdImpact008.cpp --Effect -- Forces monsters to change their attack targets, which is effective for non-players
+| | |-- StdImpact008.h
+| | |-- StdImpact009.cpp --Effect -- Teleport the character to the specified location
+| | |-- StdImpact009.h
+| | |-- StdImpact010.cpp --Effect -- Interval -onset resident effect
+| | |-- StdImpact010.h
+| | |-- StdImpact011.cpp --Effect -- State: refix all attack, Defense and MaxHP, MaxMP, MaxRage, MaxStrikePoint
+| | |-- StdImpact011.h
+| | |-- StdImpact012.cpp --Effect -- State: refix all attack, Defense and MaxHP, MaxMP, MaxRage, MaxStrikePoint
+| | |-- StdImpact012.h
+| | |-- StdImpact013.cpp --Effect -- Changes the hit, dodge and critical hit of the effect owner within a certain period of time
+| | |-- StdImpact013.h
+| | |-- StdImpact014.cpp --Effects -- stun , silence, freeze, invincibility
+| | |-- StdImpact014.h
+| | |-- StdImpact015.cpp --Effect -- State: Percentage modification of strength, endurance, spirituality, concentration, agility
+| | |-- StdImpact015.h
+| | |-- StdImpact016.cpp --Effect -- State: Percentage modification of strength, endurance, spirituality, concentration, agility
+| | |-- StdImpact016.h
+| | |-- StdImpact017.cpp --Effects -- Effects -- Immune specific effects
+| | |-- StdImpact017.h
+| | |-- StdImpact018.cpp --Effects -- Effects -- Immune specific effects
+| | |-- StdImpact018.h
+| | |-- StdImpact019.cpp --Effect -- Increase the power and duration of the specified effect
+| | |-- StdImpact019.h
+| | |-- StdImpact020.cpp --Effect -- Within a certain period of time, the effect holder can be resurrected directly after death
+| | |-- StdImpact020.h
+| | |-- StdImpact021.cpp --Effect -- Increase the power of the next n skills
+| | |-- StdImpact021.h
+| | |-- StdImpact022.cpp -- unified effect of pet revenge skills
+| | |-- StdImpact022.h
+| | |-- StdImpact023.cpp --Pet defensive DS
+| | |-- StdImpact023.h
+| | |-- StdImpact024.cpp -- Effects -- Filter adverse effects
+| | |-- StdImpact024.h
+| | |-- StdImpact025.cpp --Effect -- Negating a critical hit
+| | |-- StdImpact025.h
+| | |-- StdImpact026.cpp --Effect -- Damage shield, absorption, immunity, rebound
+| | |-- StdImpact026.h
+| | |-- StdImpact027.cpp --When attacked, transfer part of your own damage to your pet
+| | |-- StdImpact027.h
+| | |-- StdImpact028.cpp --Special attribute effect modification ( ice , Thunder ( Xuan ) , Fire, Poison )
+| | |-- StdImpact028.h
+| | |-- StdImpact029.cpp --Emei Chongxu nourishing qi effect
+| | |-- StdImpact029.h
+| | |-- StdImpact030.cpp -- Effect -- The protective effect of Emei's skill Yijinduangu
+| | |-- StdImpact030.h
+| | |-- StdImpact031.cpp -- Effect -- Wudang's magic shield : tiger hugs head
+| | |-- StdImpact031.h
+| | |-- StdImpact032.cpp --Effect -- The effect of Wudang skill Mutual Support
+| | |-- StdImpact032.h
+| | |-- StdImpact033.cpp -- Effect -- Rebellion
+| | |-- StdImpact033.h
+| | |-- StdImpact034.cpp -- Effect -- The effect of Xingxiu skill's evil deeds
+| | |-- StdImpact034.h
+| | |-- StdImpact035.cpp --Effect -- Fear state , unable to cast spells
+| | |-- StdImpact035.h
+| | |-- StdImpact036.cpp -- Effects -- Detection trap
+| | |-- StdImpact036.h
+| | |-- StdImpact037.cpp --Effect -- Increase the duration of the specified effect
+| | |-- StdImpact037.h
+| | |-- StdImpact038.cpp --Effect -- only for displaying special effects , no specific implementation is required, just a logical shell
+| | |-- StdImpact038.h
+| | |-- StdImpact039.cpp --Effect -- Increases critical hit rate for a period of time, and increases rage when taking damage
+| | |-- StdImpact039.h
+| | |-- StdImpact040.cpp --Effect -- In a certain period of time, the movement speed of the effect owner is increased, and the next attack dispels the target's anger
+| | |-- StdImpact040.h
+| | |-- StdImpact041.cpp -- Effects -- The effect of Mingjiao's Five Star Link
+| | |-- StdImpact041.h
+| | |-- StdImpact042.cpp -- Effect -- Mingjiao Seven Stars Falling from the Sky Effect
+| | |-- StdImpact042.h
+| | |-- StdImpact043.cpp --Effect -- When hitting the target, your rage increases, but your defense is reduced during this period of time
+| | |-- StdImpact043.h
+| | |-- StdImpact044.cpp --Effect -- In a certain period of time, the movement speed of the effect owner is increased, and the next time the target is successfully hit, there is a certain chance to increase the combo points by 3 points
+| | |-- StdImpact044.h
+| | |-- StdImpact045.cpp --Effect -- Increases critical hit rate for a period of time, and increases rage when taking damage
+| | |-- StdImpact045.h
+| | |-- StdImpact046.cpp --Effect -- The effect of Dali's skill 007
+| | |-- StdImpact046.h
+| | |-- StdImpact047.cpp --Effect -- The effect of Dali's skill 12
+| | |-- StdImpact047.h
+| | |-- StdImpact048.cpp --Effect -- Increase the maximum combo points of the effect owner within a certain period of time
+| | |-- StdImpact048.h
+| | |-- StdImpact049.cpp --Effect -- The effect of Xiaoyao skill 11
+| | |-- StdImpact049.h
+| | |-- StdImpact050.cpp -- Effect -- Xiaoyao rage growth correction
+| | |-- StdImpact050.h
+| | |-- StdImpact051.cpp -- Effect -- Record effect of the guardian avatar
+| | |-- StdImpact051.h
+| | |-- StdImpact052.cpp -- Effect -- Xiaoyao skill record trap
+| | |-- StdImpact052.h
+| | |-- StdImpact053.cpp --Effect -- To notify the client to display special effects separately
+| | |-- StdImpact053.h
+| | |-- StdImpact054.cpp --Effect -- Within a certain period of time, the effect holder can be resurrected directly after death
+| | |-- StdImpact054.h
+| | |-- StdImpact055.cpp --Effect -- Within a certain period of time, the effect holder can be resurrected directly after death
+| | |-- StdImpact055.h
+| | |-- StdImpact056.cpp --Effects -- Modify , hit, dodge, life limit, physical and magic attack and defense within a certain period of time
+| | |-- StdImpact056.h
+| | |-- StdImpact057.cpp --Effect -- Pet 's health is converted into owner's HP and MP
+| | `-- StdImpact057.h
+| |-- ImpactLogics.cpp --State operation class
+| |-- ImpactLogics.h
+| |-- LogicManager.cpp -- Operation manager
+| |-- LogicManager.h
+| |-- Makefile
+| |-- RelationshipChecker.cpp -- Relationship detection logic between target and skill user
+| |-- RelationshipChecker.h
+| |-- ScriptLogic.cpp --Script operation class
+| |-- ScriptLogic.h
+| |-- Skill_Core.cpp --Skill core class
+| |-- Skill_Core.h
+| |-- SkillInfo.cpp --Skill information class
+| |-- SkillInfo.h
+| |-- SkillLogic --Skill operation module
+| | |-- ArmorMastery.cpp -- Equipment effects 
+| | |-- ArmorMastery.h
+| | |-- Common -- Skills for all
+| | | |-- CommonSkill001.cpp -- Catching pets
+| | | |-- CommonSkill001.h
+| | | |-- CommonSkill002.cpp --Summon pet
+| | | |-- CommonSkill002.h
+| | | |-- CommonSkill003.cpp -- ?
+| | | |-- CommonSkill003.h
+| | | `-- Makefile
+| | |-- Human -- Character Skill Module ( discarded ) // Consider removing this module
+| | | |-- DaLiSkill001.cpp
+| | | |-- DaLiSkill001.h
+| | | |-- DaLiSkill007.cpp
+| | | |-- DaLiSkill014.cpp
+| | | |-- EMeiSkill001.cpp
+| | | |-- EMeiSkill001.h
+| | | |-- GaiBangSkill001.cpp
+| | | |-- GaiBangSkill001.h
+| | | |-- GaiBangSkill002.cpp
+| | | |-- GaiBangSkill004.cpp
+| | | |-- GaiBangSkill014.cpp
+| | | |-- Makefile
+| | | |-- MingJiaoSkill001.cpp
+| | | |-- MingJiaoSkill001.h
+| | | |-- MingJiaoSkill002.cpp
+| | | |-- MingJiaoSkill002.h
+| | | |-- ShaoLinSKill002.cpp
+| | | |-- ShaoLinSKill007.cpp
+| | | |-- TianShanSkill001.cpp
+| | | |-- TianShanSkill001.h
+| | | |-- TianShanSkill009.cpp
+| | | |-- TianShanSkill010.cpp
+| | | |-- TianShanSkill013.cpp
+| | | |-- WuDangSkill001.cpp
+| | | |-- WuDangSkill001.h
+| | | |-- XiaoYaoSkill001.cpp
+| | | |-- XiaoYaoSkill001.h
+| | | |-- XiaoYaoSkill002.cpp
+| | | |-- XiaoYaoSkill002.h
+| | | |-- XiaoYaoSkill016.cpp
+| | | `-- XingXiuSkill008.cpp
+| | |-- ImpactsToTargetAndSelf.cpp -- Basic skills - only produces ( specific effects ) , 1 to 1 , not AE
+| | |-- ImpactsToTargetAndSelf.h
+| | |-- ImpactsToTarget.cpp -- Basic skill - only produces ( specific effect ) , regardless of friend or foe, effective for anyone during AE
+| | |-- ImpactsToTarget.h
+| | |-- Item --Item module ( discarded )
+| | | |-- GeneralItem.lua
+| | | |-- HorseRide.lua
+| | | `-- Makefile
+| | |-- Makefile
+| | |-- Pet --Pet module
+| | | |-- Makefile
+| | | |-- PetSkill001.cpp
+| | | `-- PetSkill001.h
+| | |-- SkillLogic.cpp -- Basic class for skills
+| | |-- SkillLogic.h
+| | |-- TeleportAndImpacts.cpp --Teleport and effects
+| | |-- TeleportAndImpacts.h
+| | |-- WeaponMastery.cpp -- Equipment effects
+| | `-- WeaponMastery.h
+| |-- SkillLogics.cpp --Skill operation class
+| |-- SkillLogics.h
+| |-- SpecialObjLogic --Special object operation module
+| | |-- ExplosionTrap01.cpp -- Explosion ( abandoned )
+| | |-- ExplosionTrap02.cpp -- Explosion ( abandoned )
+| | |-- ExplosionTrap03.cpp -- Explosion ( abandoned )
+| | |-- Makefile
+| | |-- RootTrap01.cpp -- Abandoned
+| | |-- SpecialObjLogic.cpp --The base class for special objects, used to declare interfaces and implement default operations
+| | |-- SpecialObjLogic.h
+| | |-- TotemLogic.cpp -- The base class for totem-like objects, used to declare interfaces and implement default operations 
+| | |-- TotemLogic.h
+| | |-- TrapLogic.cpp -- Base class for trap -like objects, used to declare interfaces and implement default operations
+| | `-- TrapLogic.h
+| |-- SpecialObjLogics.h
+| |-- TargetChecker.cpp -- Detection logic of whether the target is legal
+| |-- TargetChecker.h
+| |-- TargetingAndDepletingParams.cpp -- A collection of target and depleted temporary data on the character
+| `-- TargetingAndDepletingParams.h
+|-- SMU -- Shared Memory Management Module
+| |-- Makefile
+| |-- ShareMemAO.cpp -- Shared memory access object class
+| |-- ShareMemAO.h
+| |-- SMUManager.cpp -- Shared memory manager
+| `-- SMUManager.h
+|-- stdafx.cpp
+|-- stdafx.h
+`-- Team --Team module
+|-- Makefile
+|-- Team.cpp --Team class
+|-- Team.h
+`-- Team.inl
+
+Shared Memory Server Directory Structure (./server/ShareMemory)
+.
+|-- DB --Data module
+| |-- Makefile
+| |-- ShareDBManager.cpp -- Shared data manager
+| `-- ShareDBManager.h
+|-- Main -- Main directory
+| |-- CommandThread.cpp --Command thread class
+| |-- CommandThread.h
+| |-- Makefile
+| |-- ShareMemory.cpp --main entry
+| |-- ShareMemory.h
+| |-- SMConfig.cpp --Shared memory configuration ( abandoned )
+| `-- SMConfig.h
+|-- Makefile
+|-- ShareData -- shared data module
+| |-- Makefile
+| |-- SMULogicManager.cpp -- Shared data operation manager
+| `-- SMULogicManager.h
+|-- stdafx.cpp
+`--stdafx.h
+
+World server directory structure description (./server/World)
+.
+|-- Main -- Main directory
+| |-- Makefile
+| |-- Player.cpp --Player class
+| |-- Player.h
+| |-- PlayerManager.cpp --Player manager
+| |-- PlayerManager.h
+| |-- PlayerPool.cpp --Player pool class
+| |-- PlayerPool.h
+| |-- ServerManager.cpp -- Server Manager
+| |-- ServerManager.h
+| |-- ServerPlayer.cpp --Server player class
+| |-- ServerPlayer.h
+| |-- ShareMemManager.cpp -- Shared memory manager
+| |-- ShareMemManager.h
+| |-- World.cpp --main entrance
+| |-- World.h
+| |-- WorldTable.cpp --Resource table class used by the world data server
+| `-- WorldTable.h
+|-- Makefile
+|-- Packets --Network packets
+| |-- GGSceneNotifyHandler.cpp --Scene message
+| |-- GSAskDataHandler.cpp --Request data
+| |-- GWAskChangeSceneHandler.cpp --Request to switch scenes
+| |-- GWAskMailHandler.cpp -- Request email
+| |-- GWAskSceneDataHandler.cpp --Request scene data
+| |-- GWAskTeamInfoHandler.cpp --Request team information
+| |-- GWAskTeamMemberInfoHandler.cpp --Request team member information
+| |-- GWAskUserDataHandler.cpp --Request user data
+| |-- GWBatchMailHandler.cpp --Batch mail
+| |-- GWCallOfHumanHandler.cpp --Calling players
+| |-- GWChangeMenpaiHandler.cpp --Change the sect
+| |-- GWChannelCreateHandler.cpp -- guide the establishment ( team )
+| |-- GWChannelDismissHandler.cpp --Guide disbanding ( team )
+| |-- GWChannelInviteHandler.cpp -- guide application ( team )
+| |-- GWChannelKickHandler.cpp --Guide kicking ( team )
+| |-- GWChatHandler.cpp --Chat
+| |-- GWCityApplyNewCityHandler.cpp --New city passed
+| |-- GWCityAskInitInfoHandler.cpp --New city application
+| |-- GWCityCloseHandler.cpp --City closure
+| |-- GWCityCloseSuccessHandler.cpp --City closed successfully
+| |-- GWCityOptHandler.cpp --City operation
+| |-- GWCommandHandler.cpp --Command
+| |-- GWEnterTeamFollowHandler.cpp --Start team following
+| |-- GWFingerHandler.cpp --query data
+| |-- GWGuildHandler.cpp -- Gang
+| |-- GWHeartBeatHandler.cpp --Heartbeat
+| |-- GWLevelUpHandler.cpp -- Upgrade
+| |-- GWMailHandler.cpp --Mail
+| |-- GWNotifyUserHandler.cpp --User message
+| |-- GWRelationHandler.cpp --Relationship
+| |-- GWStopTeamFollowHandler.cpp --Stop team following
+| |-- GWSystemMsgHandler.cpp --System message
+| |-- GWTeamApplyHandler.cpp --Team passed
+| |-- GWTeamAppointHandler.cpp --Team leader transfer
+| |-- GWTeamDismissHandler.cpp --Team disbandment
+| |-- GWTeamInviteHandler.cpp -- Apply for team formation
+| |-- GWTeamKickHandler.cpp --Team kicks people
+| |-- GWTeamLeaderRetInviteHandler.cpp --Team captain invites team members
+| |-- GWTeamLeaveHandler.cpp --Leave the team
+| |-- GWTeamMemberEnterSceneHandler.cpp --Team members enter the scene
+| |-- GWTeamRetApplyHandler.cpp -- Team passing result
+| |-- GWTeamRetInviteHandler.cpp --Team application result
+| |-- GWUpdateTitleHandler.cpp --Update title
+| |-- LWAskCharLoginHandler.cpp --Request character login
+| |-- LWAskDeleteCharHandler.cpp --Request to delete character
+| |-- Makefile
+| |-- SGRetDataHandler.cpp --Data return results
+| |-- SSConnectHandler.cpp --Connect
+| |-- SSScenePlayerCountHandler.cpp --Number of scene players
+| |-- WGHandler.cpp -- World -> Server message operation class
+| `-- WLHandler.cpp -- World -> Login message operation class
+|-- stdafx.cpp
+|-- stdafx.h
+`-- WorldData --World data module
+|-- AllUser.cpp --All user classes
+|-- AllUser.h
+|-- ChatCenter.cpp --Chat container
+|-- ChatCenter.h
+|-- City.cpp --City class
+|-- City.h
+|-- CityManager.cpp --City Manager
+|-- CityManager.h
+|-- Guild.cpp -- Guild class
+|-- Guild.h
+|-- GuildManager.cpp -- Guild manager
+|-- GuildManager.h
+|-- MailCenter.cpp --Mail center class
+|-- MailCenter.h
+|-- MailDefine.cpp --Mail definition
+|-- MailDefine.h
+|-- MailPool.cpp --Mail pool class
+|-- MailPool.h
+|-- Makefile
+|-- OnlineUser.cpp --Online user class
+|-- OnlineUser.h
+|-- SceneInfo.cpp -- Scene information class
+|-- SceneInfo.h
+|-- Team.cpp --Team class
+|-- Team.h
+|-- User.cpp --User class
+|-- User.h
+|-- User.inl
+WorldTimeInfo.cpp --World time class
+`-- WorldTimeInfo.h
+
+
